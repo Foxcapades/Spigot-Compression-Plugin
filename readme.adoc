@@ -1,0 +1,6 @@
+= Spigot Block Compression Plugin
+
+TODO:
+
+* [ ] Handle right click
+* [ ] Handle shift click
