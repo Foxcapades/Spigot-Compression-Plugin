@@ -16,8 +16,7 @@ repositories {
 
 dependencies {
   implementation("org.jetbrains.kotlin", "kotlin-stdlib", "1.6.0")
-  implementation("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "1.6.0")
-  implementation("org.json", "json", "20210307")
+//  implementation("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "1.6.0")
   compileOnly("org.spigotmc", "spigot-api", "1.18-R0.1-SNAPSHOT")
 
   testImplementation(kotlin("test"))

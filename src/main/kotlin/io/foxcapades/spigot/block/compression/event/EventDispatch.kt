@@ -17,40 +17,26 @@ import org.bukkit.event.inventory.InventoryType.WORKBENCH
 import org.bukkit.inventory.*
 import org.bukkit.persistence.PersistentDataType
 
+// FIXME: Shift click consumes without granting a new item
+// FIXME: Click with held places block in result slot.
+
 object EventDispatch : Listener {
   @EventHandler
   fun InventoryClickEvent.onInventoryClick() {
     val top = view.topInventory
 
-    if (clickedInventory != top) {
-      return
-    }
-
-    if (top.type != WORKBENCH)
-      return
-    if (view.title != CompressorTitle)
-      return
+    clickedInventory == top       || return
+    top.type == WORKBENCH         || return
+    view.title == CompressorTitle || return
 
     // FIXME
     if (slotType == RESULT) {
-      if (click.isRightClick || currentItem == null || currentItem!!.type == AIR) {
-        isCancelled = true
-        return
-      }
-
-      if (cursor != null && cursor!!.type != AIR)
-        return
-
-      Facade.runTaskLater(3) {
-        top.decrementCraftingGrid()
-        calculateResult()
-      }
-
+      handleResultClick()
       return
     }
 
     // Placing a stack in the crafting grid
-    Facade.runTaskLater(3) { calculateResult() }
+    Facade.runTaskLater(2) { calculateResult() }
   }
 
   @EventHandler
@@ -85,7 +71,7 @@ object EventDispatch : Listener {
     if (!relevant)
       return
 
-    Facade.runTaskLater(3) { calculateResult() }
+    Facade.runTaskLater(2) { calculateResult() }
   }
 
   @EventHandler
@@ -176,7 +162,7 @@ fun Inventory.decrementCraftingGrid() {
 
 fun Inventory.allTheSame(): ItemStack? {
 
-  val first = getItem(1) ?: return null
+  val first = getItem(2) ?: return null
 
   for (i in 2..9)
     if (!first.isSimilar(getItem(i)))
