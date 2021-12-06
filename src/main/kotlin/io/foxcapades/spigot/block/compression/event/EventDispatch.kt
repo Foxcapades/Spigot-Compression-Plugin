@@ -17,26 +17,30 @@ import org.bukkit.event.inventory.InventoryType.WORKBENCH
 import org.bukkit.inventory.*
 import org.bukkit.persistence.PersistentDataType
 
-// FIXME: Shift click consumes without granting a new item
-// FIXME: Click with held places block in result slot.
+// FIXME: Shift click backpack stacks deletes them
 
 object EventDispatch : Listener {
   @EventHandler
   fun InventoryClickEvent.onInventoryClick() {
-    val top = view.topInventory
+    view.topInventory.type == WORKBENCH       || return
+    view.title             == CompressorTitle || return
 
-    clickedInventory == top       || return
-    top.type == WORKBENCH         || return
-    view.title == CompressorTitle || return
+    when {
+      clickedInventory === view.bottomInventory -> {
+        if (click.isShiftClick)
+          handleBottomShiftClick()
+      }
 
-    // FIXME
-    if (slotType == RESULT) {
-      handleResultClick()
-      return
+      clickedInventory === view.topInventory -> {
+        if (slotType == RESULT)
+          handleResultClick()
+      }
+
+      else -> {
+        // Just recalculate the result
+        Facade.runTask { calculateResult() }
+      }
     }
-
-    // Placing a stack in the crafting grid
-    Facade.runTaskLater(2) { calculateResult() }
   }
 
   @EventHandler
