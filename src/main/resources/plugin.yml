@@ -1,5 +1,5 @@
 name: block-compression
-version: 1.0-SNAPSHOT
+version: 1.0.1
 author: Elizabeth Harper <foxcapades.io@gmail.com>
 main: io.foxcapades.spigot.block.compression.BlockCompressionPlugin
 website: https://github.com/Foxcapades
@@ -16,6 +16,6 @@ commands:
     usage: /<command>
     aliases:
       - zip
-#    permission: block-compression.gui
-#    permission-message: You do not have permission to compress blocks.
+    permission: block-compression.gui
+    permission-message: You do not have permission to compress blocks.
 

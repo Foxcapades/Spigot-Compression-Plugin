@@ -2,11 +2,8 @@
 
 package io.foxcapades.spigot.block.compression.inventory
 
-import io.foxcapades.spigot.block.compression.item.freeSpace
-import io.foxcapades.spigot.block.compression.item.hasSpace
-import io.foxcapades.spigot.block.compression.item.isEmpty
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
+import io.foxcapades.spigot.block.compression.item.*
+import org.bukkit.inventory.*
 
 internal inline fun Inventory.spreadCraftingTable(item: ItemStack): Int {
   // Holder for the count of items we are trying to spread into the crafting
@@ -84,8 +81,39 @@ internal inline fun Inventory.spreadCraftingTable(item: ItemStack): Int {
   return 0
 }
 
-internal inline fun ItemStack.cloneWith(qty: Int): ItemStack {
-  val out = ItemStack(this)
-  out.amount = qty
-  return out
+fun Inventory.decrementCraftingGrid() {
+
+  for (i in 1..9) {
+    val current = getItem(i) ?: continue
+
+    if (current.amount == 1) {
+      setItem(i, null)
+    } else {
+      current.amount--
+    }
+  }
+}
+
+fun Inventory.allTheSame(): ItemStack? {
+
+  val first = getItem(2) ?: return null
+
+  for (i in 2..9)
+    if (!first.isSimilar(getItem(i)))
+      return null
+
+  return first
+}
+
+fun Inventory.singularStack(): ItemStack? {
+
+  var found: ItemStack? = null
+
+  for (i in 1..9)
+    when (val v = getItem(i)) {
+      null -> continue
+      else -> if (found != null) return null else found = v
+    }
+
+  return found
 }
