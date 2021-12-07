@@ -7,8 +7,8 @@ stacks of items or blocks for easier storage or transport of mass quantities.
 
 ++++
 <p align="center">
-  <img width="320" src="https://i.imgur.com/yxlASoJ.png">
-  <img width="455" src="https://i.imgur.com/emRlFKF.png">
+  <img width="330" src="https://i.imgur.com/yxlASoJ.png">
+  <img width="468" src="https://i.imgur.com/emRlFKF.png">
 </p>
 ++++
 
@@ -19,8 +19,8 @@ compressed items.
 
 ++++
 <p align="center">
-  <img width="370" src="https://i.imgur.com/aMsCsxc.png">
-  <img width="370" src="https://i.imgur.com/GEPjVxP.png">
+  <img width="410" src="https://i.imgur.com/aMsCsxc.png">
+  <img width="410" src="https://i.imgur.com/GEPjVxP.png">
 </p>
 ++++
 
