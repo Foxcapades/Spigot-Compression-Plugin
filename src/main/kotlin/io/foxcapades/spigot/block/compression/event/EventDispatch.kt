@@ -8,7 +8,7 @@ import org.bukkit.event.*
 import org.bukkit.event.inventory.*
 import org.bukkit.inventory.ItemStack
 
-// FIXME: Shift click backpack stacks deletes them
+// FIXME: Click on result with a stack in hand doesn't work.
 
 object EventDispatch : Listener {
   @EventHandler

@@ -27,7 +27,7 @@ fun ItemStack.compressionLevel(lvl: CompressionLevel, qty: Int): ItemStack {
     out.itemMeta = null
   } else {
     val meta = out.itemMeta ?: throw IllegalStateException()
-    meta.persistentDataContainer.set(Facade.key(metaKey), PersistentDataType.BYTE, lvl.ordinal.toByte())
+    meta.persistentDataContainer.set(Facade.key(metaKey), PersistentDataType.BYTE, lvl.value.toByte())
 
     val name = if (type.isBlock) I18N.blockName(type) else I18N.itemName(type)
     meta.setDisplayName(I18N.fillNameFor(lvl, name))
@@ -63,6 +63,36 @@ internal inline fun ItemStack?.hasSpace() = this != null && amount < maxStackSiz
 
 internal inline fun ItemStack?.freeSpace() = if (this == null) 0 else maxStackSize - amount
 
-internal infix fun ItemStack?.isSimilarTo(other: ItemStack?) = this != null && this.isSimilar(other)
+internal infix fun ItemStack?.isCompatibleWith(other: ItemStack?) = this != null && this.isSimilar(other)
 
-internal infix fun ItemStack?.isNotSimilarTo(other: ItemStack?) = this == null || !this.isSimilar(other)
+internal infix fun ItemStack.isNotSimilarTo(other: ItemStack?) = !isSimilar(other)
+
+internal val ItemStack?.size
+  get() = this?.amount ?: 0
+
+internal inline infix fun ItemStack?.take(other: ItemStack?): ItemStack? {
+  // Calculate the amount of space available in the slotted stack.
+  val space = this!!.freeSpace()
+
+  // If there is enough room in the slotted stack to contain the entire
+  // cursor stack:
+  if (other!!.size <= space) {
+    // Put the entire cursor stack into the slot.
+
+    // Update the slotted stack quantity.
+    amount += other.size
+
+    // Clear out the cursor slot.
+    return null
+  } else {
+    // Put the amount that we can fit into the slotted stack.
+
+    // Max out the slotted stack.
+    amount = maxStackSize
+
+    // Reduce the cursor stack quantity.
+    other.amount -= space
+
+    return other
+  }
+}

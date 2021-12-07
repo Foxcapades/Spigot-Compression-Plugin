@@ -47,7 +47,7 @@ private inline fun InventoryClickEvent.handleBottomShiftClick() {
       current.amount = remains
     }
 
-    calculateResult(false)
+    calculateResult()
   }
 }
 

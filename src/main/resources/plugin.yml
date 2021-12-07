@@ -2,15 +2,11 @@ name: block-compression
 version: 1.0.1
 author: Elizabeth Harper <foxcapades.io@gmail.com>
 main: io.foxcapades.spigot.block.compression.BlockCompressionPlugin
-website: https://github.com/Foxcapades
+website: https://github.com/Foxcapades/Spigot-Compression-Plugin
 api-version: 1.17
 
 commands:
   compress:
-    # DO NOT CHANGE THIS
-    # This value is used to map custom command overrides to their real purpose.
-    # If this value is changed, the plugin will not be able to correctly
-    # its commands.
     id: bcp-compress
     description: Open the item compression UI.
     usage: /<command>

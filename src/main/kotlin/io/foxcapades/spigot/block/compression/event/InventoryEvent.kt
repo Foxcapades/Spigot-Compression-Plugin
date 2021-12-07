@@ -11,22 +11,23 @@ import io.foxcapades.spigot.block.compression.item.isEmpty
 import org.bukkit.event.inventory.InventoryEvent
 
 
-internal fun InventoryEvent.calculateResult(async: Boolean) {
+internal fun InventoryEvent.calculateResult() {
+  Facade.logTrace("InventoryEvent#calculateResult()")
+
   val top = view.topInventory
 
-  if (handleSingleStackIfPossible(async))
+  if (handleSingleStackIfPossible())
     return
 
-  if (handleAllStacksIfPossible(async))
+  if (handleAllStacksIfPossible())
     return
 
-  if (async)
-    Facade.runTask { top.setItem(0, null) }
-  else
-    top.setItem(0, null)
+  top.setItem(0, null)
 }
 
-private inline fun InventoryEvent.handleSingleStackIfPossible(async: Boolean): Boolean {
+private inline fun InventoryEvent.handleSingleStackIfPossible(): Boolean {
+  Facade.logTrace("InventoryEvent#handleSingleStackIfPossible()")
+
   val stack = view.topInventory.singularStack()
 
   if (stack.isEmpty())
@@ -38,16 +39,15 @@ private inline fun InventoryEvent.handleSingleStackIfPossible(async: Boolean): B
   val lvl = stack.compressionLevel()
 
   if (lvl.hasPrevious) {
-    if (async)
-      Facade.runTask { view.topInventory.setItem(0, stack.compressionLevel(lvl.previous, 9)) }
-    else
-      view.topInventory.setItem(0, stack.compressionLevel(lvl.previous, 9))
+    view.topInventory.setItem(0, stack.compressionLevel(lvl.previous, 9))
   }
 
   return true
 }
 
-private inline fun InventoryEvent.handleAllStacksIfPossible(async: Boolean): Boolean {
+private inline fun InventoryEvent.handleAllStacksIfPossible(): Boolean {
+  Facade.logTrace("InventoryEvent#handleAllStacksIfPossible()")
+
   val stack = view.topInventory.allTheSame()
 
   if (stack.isEmpty())
@@ -59,10 +59,7 @@ private inline fun InventoryEvent.handleAllStacksIfPossible(async: Boolean): Boo
   val lvl = stack.compressionLevel()
 
   if (lvl.hasNext) {
-    if (async)
-      Facade.runTask { view.topInventory.setItem(0, stack.compressionLevel(lvl.next, 1)) }
-    else
-      view.topInventory.setItem(0, stack.compressionLevel(lvl.next, 1))
+    view.topInventory.setItem(0, stack.compressionLevel(lvl.next, 1))
   }
 
   return true

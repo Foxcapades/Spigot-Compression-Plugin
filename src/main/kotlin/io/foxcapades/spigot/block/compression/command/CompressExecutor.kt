@@ -2,18 +2,23 @@ package io.foxcapades.spigot.block.compression.command
 
 import io.foxcapades.spigot.block.compression.consts.CompressorTitle
 import io.foxcapades.spigot.block.compression.facades.Facade
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
+import org.bukkit.command.*
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType.WORKBENCH
 
+/**
+ * Compress Command Executor Singleton
+ *
+ * @author Elizabeth Harper [foxcapades.io@gmail.com]
+ * @since  v1.0.0
+ */
 object CompressExecutor : CommandExecutor {
-  override fun onCommand(p0: CommandSender, p1: Command, p2: String, p3: Array<out String>): Boolean {
-    if (p0 !is Player)
+
+  override fun onCommand(player: CommandSender, command: Command, alias: String, args: Array<out String>): Boolean {
+    if (player !is Player)
       return false
 
-    p0.openInventory(Facade.server.createInventory(p0, WORKBENCH, CompressorTitle))
+    player.openInventory(Facade.server.createInventory(player, WORKBENCH, CompressorTitle))
     return true
   }
 }

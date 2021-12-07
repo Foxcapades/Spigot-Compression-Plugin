@@ -1,5 +1,6 @@
 package io.foxcapades.spigot.block.compression.event
 
+import io.foxcapades.spigot.block.compression.facades.Facade
 import org.bukkit.event.inventory.InventoryDragEvent
 
 // ╔═════════════════════════════════════════════════════════════════════════╗//
@@ -9,6 +10,8 @@ import org.bukkit.event.inventory.InventoryDragEvent
 // ╚═════════════════════════════════════════════════════════════════════════╝//
 
 internal fun InventoryDragEvent.handleDrag() {
+  Facade.logTrace("InventoryDragEvent.handleDrag()")
+
   var relevant = false
 
   // For each slot in the slots the user dragged across:
@@ -16,7 +19,7 @@ internal fun InventoryDragEvent.handleDrag() {
 
     // If the slot is the result slot:
     if (i == 0) {
-
+      Facade.logTrace("user hit the result slot, cancelling.")
       // Cancel the event as we don't allow dragging into that slot.
       isCancelled = true
       return
@@ -34,10 +37,13 @@ internal fun InventoryDragEvent.handleDrag() {
   }
 
   // If this event is not relevant to us:
-  if (!relevant)
+  if (!relevant) {
+    Facade.logTrace("Not relevant, skipping.")
+
     // Ignore it.
     return
+  }
 
   // Update the result slot asynchronously.
-  calculateResult(true)
+  Facade.runTask { calculateResult() }
 }

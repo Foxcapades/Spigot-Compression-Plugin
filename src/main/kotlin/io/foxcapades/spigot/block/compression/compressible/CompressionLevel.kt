@@ -2,20 +2,20 @@ package io.foxcapades.spigot.block.compression.compressible
 
 import io.foxcapades.spigot.block.compression.util.pow
 
-enum class CompressionLevel {
-  None,
-  One,
-  Two,
-  Three,
-  Four,
-  Five,
-  Six,
-  Seven,
-  Eight,
-  Nine,
+enum class CompressionLevel(val value: Int) {
+  None(0),
+  One(1),
+  Two(2),
+  Three(3),
+  Four(4),
+  Five(5),
+  Six(6),
+  Seven(7),
+  Eight(8),
+  Nine(9),
   ;
 
-  val size get() = 9 pow ordinal
+  val size get() = 9 pow value
 
   val hasNext get() = this != Nine
 
@@ -49,7 +49,7 @@ enum class CompressionLevel {
       else  -> throw IndexOutOfBoundsException()
     }
 
-  override fun toString() = ordinal.toString()
+  override fun toString() = value.toString()
 
   companion object {
     @JvmStatic

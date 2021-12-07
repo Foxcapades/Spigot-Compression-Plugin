@@ -7,7 +7,7 @@ plugins {
 }
 
 group   = "io.foxcapades"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
   mavenCentral()
@@ -43,4 +43,15 @@ tasks.withType(KotlinCompile::class.java).all {
 
 tasks.test {
   useJUnitPlatform()
+}
+
+tasks.register("compress", proguard.gradle.ProGuardTask::class.java) {
+  dependsOn(":shadowJar")
+
+  configuration("bld/proguard-rules.pro")
+
+  libraryjars(files(configurations.compileClasspath.get().files))
+
+  injars("build/libs/spigot-block-compression-$version-all.jar")
+  outjars("build/libs/spigot-block-compression-$version-release.jar")
 }
