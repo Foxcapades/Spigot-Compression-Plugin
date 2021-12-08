@@ -12,7 +12,8 @@ version = "1.0.1"
 repositories {
   mavenCentral()
   maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-  maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }}
+  maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+}
 
 dependencies {
   implementation("org.jetbrains.kotlin", "kotlin-stdlib", "1.6.0")
@@ -24,6 +25,7 @@ dependencies {
   testImplementation("org.junit.jupiter:junit-jupiter")
   testImplementation("org.mockito:mockito-core:4.0.0")
   testImplementation("io.mockk:mockk:1.12.1")
+  testCompileOnly("org.spigotmc", "spigot-api", "1.18-R0.1-SNAPSHOT")
 }
 
 kotlin {
