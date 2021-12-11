@@ -44,7 +44,7 @@ internal fun InventoryClickEvent.handleCustomLeftClick(top: BCCraftingInv) {
   // Slot type is RESULT.
   // Slot is not empty.
 
-  if (cursor.isCompatibleWith(currentItem) && cursor.freeSpace() > currentItem.size) {
+  if (cursor.isCompatibleWith(currentItem) && cursor.freeSpace() >= currentItem.size) {
     cursor.size += currentItem.size
     top.dec()
     calculateResult()
