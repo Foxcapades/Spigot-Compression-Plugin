@@ -2,6 +2,8 @@
 
 package io.foxcapades.spigot.block.compression.event
 
+import io.foxcapades.spigot.block.compression.compressible.CompressionLevel.None
+import io.foxcapades.spigot.block.compression.item.compressionLevel
 import org.bukkit.event.inventory.ClickType.*
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType.*
@@ -32,6 +34,10 @@ private fun InventoryClickEvent.handleItemMove(slot: ItemStack) {
   // If the user is trying to move an item from the top inventory to the bottom,
   // do not prevent.
   if (clickedInventory === view.topInventory)
+    return
+
+  // We don't care about non-compressed item moves.
+  if (slot.compressionLevel() == None)
     return
 
   // We allow freely moving into these inventory types
