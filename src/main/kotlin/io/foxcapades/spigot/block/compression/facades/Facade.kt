@@ -4,7 +4,6 @@ package io.foxcapades.spigot.block.compression.facades
 
 import io.foxcapades.spigot.block.compression.BlockCompressionPlugin
 import org.bukkit.NamespacedKey
-import java.io.InputStream
 
 /**
  * Passthrough facade over this plugin.
@@ -21,8 +20,13 @@ internal object Facade/* : Plugin*/ {
 
   inline fun logInfo(log: String) = BlockCompressionPlugin.instance!!.logger.info(log)
 
-  inline fun logTrace(log: String) {
-    if (enableTrace)
+  inline fun logTrace(log: String, vararg fill: Any?) {
+    if (!enableTrace)
+      return
+
+    if (fill.isNotEmpty())
+      BlockCompressionPlugin.instance!!.logger.info("[TRACE] ${log.format(*fill)}")
+    else
       BlockCompressionPlugin.instance!!.logger.info("[TRACE] $log")
   }
 
@@ -31,10 +35,4 @@ internal object Facade/* : Plugin*/ {
   fun runTask(op: () -> Unit) {
     BlockCompressionPlugin.instance!!.server.scheduler.runTask(BlockCompressionPlugin.instance!!, op)
   }
-
-  fun runTaskLater(ticks: Long, op: () -> Unit) {
-    BlockCompressionPlugin.instance!!.server.scheduler.runTaskLater(BlockCompressionPlugin.instance!!, op, ticks)
-  }
-
-  fun getResource(filename: String): InputStream? = BlockCompressionPlugin.instance!!.getResource(filename)
 }

@@ -1,0 +1,91 @@
+= Manual Testing Checklist
+
+== Custom Inventory
+
+=== Left Click
+
+==== Without Shift
+
+[%interactive]
+* [ ] With no cursor item on full slot. +
++
+====
+* Slotted item should be picked up from slot and put on the cursor.
+* Slot should be cleared.
+====
+
+* [ ] With cursor item on empty slot. +
++
+====
+* Cursor item should be placed in slot.
+* Cursor should be cleared.
+====
+
+* [ ] With cursor item on full slot of a compatible item type. +
++
+====
+* The slotted stack should be filled as much as possible up to the max stack
+  size for that item type with any remainder staying on the cursor.
+====
+
+* [ ] With cursor item on full slot of an incompatible item type. +
++
+====
+* The cursor item and slotted item should be swapped.
+====
+
+==== With Shift
+
+
+
+* [ ] In bottom inventory on full stack. +
++
+====
+* Crafting grid should be filled with stacks of 7 blocks.
+* The clicked slot should be cleared (may be refilled with overflow).
+* One item should be put back into the bottom inventory.
+====
+
+* [ ] In bottom inventory on stack with less than 9 blocks. +
++
+====
+* Action should be rejected.
+====
+
+* [ ] In crafting grid on full slot. +
++
+====
+* Slotted should be merged into bottom inventory.
+* Crafting grid slot should be cleared.
+====
+
+* [ ] Result slot with stacks of the same type and size in all crafting grid
+  slots. +
++
+====
+* A stack of compressed items equal to the size of the stacks in the crafting
+  grid should be added to the player inventory.
+* The crafting grid should be cleared.
+====
+
+* [ ] Result slot with stacks of the same type but different sizes
+  in all crafting grid slots. +
++
+====
+* A stack of compressed items equal to the minimum common quantity across the
+  crafting grid should be added to the player inventory.
+* All stacks in the crafting grid should be reduced by the minimum common
+  quantity.
+* Stacks with sizes equal to the minimum common quantity should be cleared from
+  the crafting grid.
+====
+
+== Standard Inventory
+
+=== Maker Inventory
+
+User crafting slots, workbench, furnace, etc..
+
+=== Chest-like Inventory
+
+Chest, shulker box, barrel, etc..

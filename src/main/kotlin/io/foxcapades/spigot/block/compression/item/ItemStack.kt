@@ -67,10 +67,17 @@ internal infix fun ItemStack?.isCompatibleWith(other: ItemStack?) = this != null
 
 internal infix fun ItemStack.isNotSimilarTo(other: ItemStack?) = !isSimilar(other)
 
-internal val ItemStack?.size
-  get() = this?.amount ?: 0
+internal var ItemStack?.size: Int
+  get()  = this?.amount ?: 0
+  set(v) {
+    this?.apply { amount = v }
+  }
 
-internal inline infix fun ItemStack?.take(other: ItemStack?): ItemStack? {
+internal inline fun ItemStack?.clone(size: Int): ItemStack {
+  return if (this == null) Air else ItemStack(this).apply { amount = size }
+}
+
+internal inline infix fun ItemStack?.fillWith(other: ItemStack?): ItemStack? {
   // Calculate the amount of space available in the slotted stack.
   val space = this!!.freeSpace()
 

@@ -4,62 +4,57 @@ package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.compressible.Compressibles
 import io.foxcapades.spigot.block.compression.facades.Facade
-import io.foxcapades.spigot.block.compression.inventory.allTheSame
-import io.foxcapades.spigot.block.compression.inventory.singularStack
+import io.foxcapades.spigot.block.compression.item.Air
 import io.foxcapades.spigot.block.compression.item.compressionLevel
 import io.foxcapades.spigot.block.compression.item.isEmpty
+import io.foxcapades.spigot.block.compression.wrap.BCCraftingInv
 import org.bukkit.event.inventory.InventoryEvent
 
 
 internal fun InventoryEvent.calculateResult() {
-  Facade.logTrace("InventoryEvent#calculateResult()")
+  val top = BCCraftingInv(view.topInventory)
 
-  val top = view.topInventory
+  if (handleSingleStackIfPossible(top)) {
+    return
+  }
 
-  if (handleSingleStackIfPossible())
+  if (handleAllStacksIfPossible(top))
     return
 
-  if (handleAllStacksIfPossible())
-    return
-
-  top.setItem(0, null)
+  top.setResult(null)
 }
 
-private inline fun InventoryEvent.handleSingleStackIfPossible(): Boolean {
-  Facade.logTrace("InventoryEvent#handleSingleStackIfPossible()")
+private inline fun InventoryEvent.handleSingleStackIfPossible(top: BCCraftingInv): Boolean {
+  val single = top.getIfSingleStack()
 
-  val stack = view.topInventory.singularStack()
-
-  if (stack.isEmpty())
+  if (single === Air)
     return false
 
-  if (stack !in Compressibles)
+  if (single !in Compressibles)
     return false
 
-  val lvl = stack.compressionLevel()
+  val lvl = single.compressionLevel()
 
   if (lvl.hasPrevious) {
-    view.topInventory.setItem(0, stack.compressionLevel(lvl.previous, 9))
+    view.topInventory.setItem(0, single.compressionLevel(lvl.previous, 9))
   }
 
   return true
 }
 
-private inline fun InventoryEvent.handleAllStacksIfPossible(): Boolean {
-  Facade.logTrace("InventoryEvent#handleAllStacksIfPossible()")
+private inline fun InventoryEvent.handleAllStacksIfPossible(top: BCCraftingInv): Boolean {
+  val all = top.getIfAllTheSame()
 
-  val stack = view.topInventory.allTheSame()
-
-  if (stack.isEmpty())
+  if (all === Air)
     return false
 
-  if (stack !in Compressibles)
+  if (all !in Compressibles)
     return false
 
-  val lvl = stack.compressionLevel()
+  val lvl = all.compressionLevel()
 
   if (lvl.hasNext) {
-    view.topInventory.setItem(0, stack.compressionLevel(lvl.next, 1))
+    view.topInventory.setItem(0, all.compressionLevel(lvl.next, 1))
   }
 
   return true

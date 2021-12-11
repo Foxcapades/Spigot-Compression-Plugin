@@ -6,34 +6,26 @@ import io.foxcapades.spigot.block.compression.consts.CompressorTitle
 import org.bukkit.Material.AIR
 import org.bukkit.event.*
 import org.bukkit.event.inventory.*
+import org.bukkit.event.inventory.InventoryType.*
 import org.bukkit.inventory.ItemStack
 
-// FIXME: Click on result with a stack in hand doesn't work.
-
 object EventDispatch : Listener {
-  @EventHandler
-  fun InventoryClickEvent.onInventoryClick() {
-    view.topInventory.type == InventoryType.WORKBENCH       || return
-    view.title             == CompressorTitle || return
 
-    when {
-      clickedInventory === view.bottomInventory -> handleBottomClick()
-      clickedInventory === view.topInventory    -> handleTopClick()
-    }
-  }
+  @EventHandler
+  fun InventoryClickEvent.onInventoryClick() = handleClick()
 
   @EventHandler
   fun InventoryDragEvent.onInventoryDrag() {
-    view.topInventory.type == InventoryType.WORKBENCH       || return
-    view.title             == CompressorTitle || return
-
-    handleDrag()
+    if (view.title == CompressorTitle)
+      handleCustomDrag()
+    else
+      handleDragEvent(this)
   }
 
   @EventHandler
   fun InventoryCloseEvent.onInventoryClose() {
 
-    if (view.topInventory.type != InventoryType.WORKBENCH) {
+    if (view.topInventory.type != WORKBENCH) {
       return
     }
 
