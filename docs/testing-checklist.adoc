@@ -1,5 +1,11 @@
 = Manual Testing Checklist
 
+== Bukkit
+
+[%interactive]
+* [ ] Boots on 1.17
+* [ ] Boots on 1.18
+
 == Custom Inventory
 
 === Left Click
