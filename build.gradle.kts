@@ -55,5 +55,5 @@ tasks.register("compress", proguard.gradle.ProGuardTask::class.java) {
   libraryjars(files(configurations.compileClasspath.get().files))
 
   injars("build/libs/spigot-block-compression-$version-all.jar")
-  outjars("build/libs/spigot-block-compression-$version-release.jar")
+  outjars("build/libs/spigot-block-compression.jar")
 }

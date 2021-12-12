@@ -2,6 +2,7 @@
 
 package io.foxcapades.spigot.block.compression.item
 
+import io.foxcapades.spigot.block.compression.compressible.Compressibles
 import io.foxcapades.spigot.block.compression.compressible.CompressionLevel
 import io.foxcapades.spigot.block.compression.compressible.CompressionLevel.None
 import io.foxcapades.spigot.block.compression.facades.Facade
@@ -15,8 +16,14 @@ import kotlin.contracts.contract
 
 const val metaKey = "bcp_lvl"
 
-fun ItemStack.compressionLevel(): CompressionLevel {
+internal inline fun ItemStack.compressionLevel(): CompressionLevel {
   return CompressionLevel.from(itemMeta?.persistentDataContainer?.get(Facade.key(metaKey), PersistentDataType.BYTE) ?: return None)
+}
+
+internal inline fun ItemStack.ifCompressionLevelNot(lvl: CompressionLevel, action: ItemStack.(lvl: CompressionLevel) -> Unit) {
+  val compressionLevel = compressionLevel()
+  if (compressionLevel !== lvl)
+    action(lvl)
 }
 
 fun ItemStack.compressionLevel(lvl: CompressionLevel, qty: Int): ItemStack {
@@ -48,6 +55,11 @@ internal inline fun ItemStack?.isEmpty(): Boolean {
   return this == null || type == AIR
 }
 
+internal inline fun ItemStack.ifEmpty(action: () -> Unit) {
+  if (type == AIR)
+    action()
+}
+
 @OptIn(ExperimentalContracts::class)
 internal inline fun ItemStack?.isNotEmpty(): Boolean {
   contract {
@@ -57,15 +69,24 @@ internal inline fun ItemStack?.isNotEmpty(): Boolean {
   return this != null && type != AIR
 }
 
+internal inline fun ItemStack.ifNotEmpty(action: ItemStack.() -> Unit) {
+  if (type != AIR)
+    action()
+}
+
 internal inline fun ItemStack?.isFull() = this == null || amount >= maxStackSize
 
 internal inline fun ItemStack?.hasSpace() = this != null && amount < maxStackSize
 
+internal inline fun ItemStack.ifHasSpace(action: ItemStack.(space: Int) -> Unit) {
+  val space = maxStackSize - amount
+  if (space > 0)
+    action(space)
+}
+
 internal inline fun ItemStack?.freeSpace() = if (this == null) 0 else maxStackSize - amount
 
 internal infix fun ItemStack?.isCompatibleWith(other: ItemStack?) = this != null && this.isSimilar(other)
-
-internal infix fun ItemStack.isNotSimilarTo(other: ItemStack?) = !isSimilar(other)
 
 internal var ItemStack?.size: Int
   get()  = this?.amount ?: 0
@@ -77,7 +98,7 @@ internal inline fun ItemStack?.clone(size: Int): ItemStack {
   return if (this == null) Air else ItemStack(this).apply { amount = size }
 }
 
-internal inline infix fun ItemStack?.fillWith(other: ItemStack?): ItemStack? {
+internal inline infix fun ItemStack?.fillWith(other: ItemStack?): ItemStack {
   // Calculate the amount of space available in the slotted stack.
   val space = this!!.freeSpace()
 
@@ -90,7 +111,7 @@ internal inline infix fun ItemStack?.fillWith(other: ItemStack?): ItemStack? {
     amount += other.size
 
     // Clear out the cursor slot.
-    return null
+    return Air
   } else {
     // Put the amount that we can fit into the slotted stack.
 
@@ -102,4 +123,14 @@ internal inline infix fun ItemStack?.fillWith(other: ItemStack?): ItemStack? {
 
     return other
   }
+}
+
+internal inline fun ItemStack.ifCompressible(action: ItemStack.() -> Unit) {
+  if (this in Compressibles)
+    action()
+}
+
+internal inline fun ItemStack.ifSimilar(other: ItemStack?, action: ItemStack.(other: ItemStack) -> Unit) {
+  if (isSimilar(other))
+    action(other!!)
 }

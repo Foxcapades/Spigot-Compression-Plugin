@@ -3,13 +3,39 @@
 package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.consts.CompressorTitle
-import io.foxcapades.spigot.block.compression.facades.Facade
+import io.foxcapades.spigot.block.compression.event.handler.*
+import org.bukkit.event.inventory.ClickType.*
 import org.bukkit.event.inventory.InventoryClickEvent
 
-
-internal fun InventoryClickEvent.handleClick() {
+internal fun InventoryClickEvent.handleClick() =
   if (view.title == CompressorTitle)
     handleCustomClick()
   else
     handleStandardClick()
+
+internal fun InventoryClickEvent.handleStandardClick() {
+  val event = BCInvClickEvent(this)
+
+  when (click) {
+    LEFT         -> StandardLeftClickHandler.handle(event)
+    SHIFT_LEFT   -> StandardShiftLeftClickHandler.handle(event)
+    RIGHT        -> StandardRightClickHandler.handle(event)
+    SHIFT_RIGHT  -> StandardShiftRightClickHandler.handle(event)
+    else         -> {}
+  }
+}
+
+internal fun InventoryClickEvent.handleCustomClick() {
+  val event = BCInvClickEvent(this)
+
+  // Cancel the default handling, we handle everything manually from here on.
+  event.cancel()
+
+  when (click) {
+    LEFT         -> CustomLeftClickHandler.handle(event)
+    SHIFT_LEFT   -> CustomShiftLeftClickHandler.handle(event)
+    RIGHT        -> CustomRightClickHandler.handle(event)
+    SHIFT_RIGHT  -> CustomShiftRightClickHandler.handle(event)
+    else         -> {}
+  }
 }
