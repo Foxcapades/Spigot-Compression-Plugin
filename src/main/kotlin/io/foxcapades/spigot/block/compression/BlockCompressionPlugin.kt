@@ -3,6 +3,7 @@
 package io.foxcapades.spigot.block.compression
 
 import io.foxcapades.spigot.block.compression.command.CompressExecutor
+import io.foxcapades.spigot.block.compression.command.GiveExecutor
 import io.foxcapades.spigot.block.compression.event.EventDispatch
 import io.foxcapades.spigot.block.compression.files.FileManager
 import org.bukkit.plugin.Plugin
@@ -26,6 +27,10 @@ class BlockCompressionPlugin : JavaPlugin() {
   override fun onEnable() {
     // Register compress/zip command handler.
     getCommand("compress")!!.setExecutor(CompressExecutor)
+
+    val give = getCommand("bcgive")!!
+    give.tabCompleter = GiveExecutor
+    give.setExecutor(GiveExecutor)
 
     server.pluginManager.registerEvents(EventDispatch, this)
   }

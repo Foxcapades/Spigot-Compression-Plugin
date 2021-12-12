@@ -13,5 +13,10 @@ commands:
     aliases:
       - zip
     permission: block-compression.gui
-    permission-message: You do not have permission to compress blocks.
-
+    permission-message: You do not have permission to use this command.
+  bcgive:
+    id: bcp-give
+    description: Gives a user a compressed item at the specified level.
+    usage: /command <user> <item> <lvl> <qty>
+    permission: block-compression.give
+    permission-message: You do not have permission to use this command.

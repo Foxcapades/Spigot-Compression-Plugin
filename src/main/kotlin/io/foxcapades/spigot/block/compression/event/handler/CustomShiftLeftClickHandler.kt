@@ -3,6 +3,7 @@ package io.foxcapades.spigot.block.compression.event.handler
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
 import io.foxcapades.spigot.block.compression.item.ifNotEmpty
 import org.bukkit.event.inventory.InventoryType.SlotType.RESULT
+import org.bukkit.inventory.ItemStack
 
 internal object CustomShiftLeftClickHandler : ClickHandler {
   override fun handle(event: BCInvClickEvent) {
@@ -13,10 +14,15 @@ internal object CustomShiftLeftClickHandler : ClickHandler {
   }
 
   private fun BCInvClickEvent.topClick() {
+    val rem: Map<Int, ItemStack>
+
     if (slotType == RESULT)
-      bottom.addItem(*top.popAll().toTypedArray())
+      rem = bottom.addItem(*top.popAll().toTypedArray())
     else
-      bottom.addItem(top.take(slotIndex))
+      rem = bottom.addItem(top.take(slotIndex))
+
+    for (item in rem.values)
+      player.world.dropItem(player.location, item!!)
   }
 
   private fun BCInvClickEvent.bottomClick() =

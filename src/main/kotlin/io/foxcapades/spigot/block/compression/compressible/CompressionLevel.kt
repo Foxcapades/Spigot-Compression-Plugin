@@ -55,7 +55,7 @@ enum class CompressionLevel(val value: Int) {
     @JvmStatic
     @Suppress("NOTHING_TO_INLINE")
     inline fun from(lvl: Byte) = when (lvl) {
-      in 0..7 -> values()[lvl.toInt()]
+      in 0..9 -> values()[lvl.toInt()]
       else    -> throw IllegalArgumentException("Invalid compression level value: $lvl")
     }
   }

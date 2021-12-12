@@ -2,6 +2,7 @@ package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.item.Air
 import io.foxcapades.spigot.block.compression.wrap.CraftInventory
+import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.InventoryType.*
@@ -32,6 +33,9 @@ internal class BCInvClickEvent(private val raw: InventoryClickEvent) {
 
   inline val invType: InventoryType
     get() = raw.view.topInventory.type
+
+  inline val player: Player
+    get() = raw.whoClicked as Player
 
   inline val topInvIsCompressedItemSafe: Boolean
     get() = when (invType) {
