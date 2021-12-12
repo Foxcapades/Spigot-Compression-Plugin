@@ -19,6 +19,7 @@ object CompressExecutor : CommandExecutor {
       return false
 
     player.openInventory(Facade.server.createInventory(player, WORKBENCH, CompressorTitle))
+
     return true
   }
 }

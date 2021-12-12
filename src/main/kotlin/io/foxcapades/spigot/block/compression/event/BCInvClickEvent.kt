@@ -1,22 +1,22 @@
 package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.item.Air
-import io.foxcapades.spigot.block.compression.wrap.BCCraftingInv
+import io.foxcapades.spigot.block.compression.wrap.CraftInventory
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.InventoryType.*
 import org.bukkit.inventory.ItemStack
 
 @Suppress("NOTHING_TO_INLINE")
-internal class BCInvClickEvent(val raw: InventoryClickEvent) {
+internal class BCInvClickEvent(private val raw: InventoryClickEvent) {
 
-  val top: BCCraftingInv by lazy { BCCraftingInv(raw.view.topInventory) }
+  val top by lazy { CraftInventory(raw.view.topInventory) }
 
-  inline var inventorySlot: ItemStack
+  val bottom
+    get() = raw.view.bottomInventory
+
+  inline val inventorySlot: ItemStack
     get() = raw.currentItem ?: Air
-    set(v) {
-      raw.currentItem = v
-    }
 
   inline var cursor
     get() = raw.cursor ?: Air
@@ -29,9 +29,6 @@ internal class BCInvClickEvent(val raw: InventoryClickEvent) {
 
   inline val slotIndex: Int
     get() = raw.slot
-
-  inline val rawSlotIndex: Int
-    get() = raw.rawSlot
 
   inline val invType: InventoryType
     get() = raw.view.topInventory.type
@@ -56,52 +53,33 @@ internal class BCInvClickEvent(val raw: InventoryClickEvent) {
   inline val userClickedBottom: Boolean
     get() = raw.clickedInventory === raw.view.bottomInventory
 
-  inline val action
-    get() = raw.action
+  inline val clickType
+    get() = raw.click
 
-  inline var cancelled
-    get() = raw.isCancelled
-    set(v) {
-      raw.isCancelled = v
-    }
+  inline fun cancel() { raw.isCancelled = true }
+  inline fun uncancel() { raw.isCancelled = false }
 
-  inline val topInventory
-    get() = raw.view.topInventory
-
-  inline val bottomInventory
-    get() = raw.view.bottomInventory
-
-  inline val clickedInventory
-    get() = raw.clickedInventory!!
-
-  inline val view
-    get() = raw.view
-
-  inline fun cancel() {
-    raw.isCancelled = true
-  }
-
-  inline fun ifTopInvIsNotCompressedItemSafe(action: BCInvClickEvent.(BCCraftingInv) -> Unit) {
+  inline fun ifTopInvIsNotCompressedItemSafe(action: BCInvClickEvent.(CraftInventory) -> Unit) {
     if (!topInvIsCompressedItemSafe)
       action(top)
   }
 
-  inline fun ifUserClickedTopInv(action: BCInvClickEvent.(BCCraftingInv) -> Unit) {
+  inline fun ifUserClickedTopInv(action: BCInvClickEvent.(CraftInventory) -> Unit) {
     if (userClickedTopInv)
       action(top)
   }
 
-  inline fun ifUserClickedBottomInv(action: BCInvClickEvent.(BCCraftingInv) -> Unit) {
+  inline fun ifUserClickedBottomInv(action: BCInvClickEvent.(CraftInventory) -> Unit) {
     if (userClickedBottom)
       action(top)
   }
 
-  inline fun ifSlotTypeIsNot(type: SlotType, action: BCInvClickEvent.(BCCraftingInv) -> Unit) {
+  inline fun ifSlotTypeIsNot(type: SlotType, action: BCInvClickEvent.(CraftInventory) -> Unit) {
     if (slotType !== type)
       action(top)
   }
 
-  inline fun ifSlotTypeIs(type: SlotType, action: BCInvClickEvent.(BCCraftingInv) -> Unit) {
+  inline fun ifSlotTypeIs(type: SlotType, action: BCInvClickEvent.(CraftInventory) -> Unit) {
     if (slotType === type)
       action(top)
   }

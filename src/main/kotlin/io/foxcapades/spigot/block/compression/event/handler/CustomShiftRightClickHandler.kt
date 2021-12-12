@@ -1,9 +1,16 @@
 package io.foxcapades.spigot.block.compression.event.handler
 
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
+import io.foxcapades.spigot.block.compression.item.ifNotEmpty
 
 internal object CustomShiftRightClickHandler : ClickHandler {
   override fun handle(event: BCInvClickEvent) {
-    CustomShiftLeftClickHandler.handle(event)
+    event.ifUserClickedBottomInv {
+      inventorySlot.ifNotEmpty {
+        val result = top.fillGrid(inventorySlot)
+        bottom.clear(slotIndex)
+        bottom.addItem(result)
+      }
+    }
   }
 }

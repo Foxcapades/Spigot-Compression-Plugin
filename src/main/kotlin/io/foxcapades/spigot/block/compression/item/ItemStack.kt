@@ -69,24 +69,20 @@ internal inline fun ItemStack?.isNotEmpty(): Boolean {
   return this != null && type != AIR
 }
 
-internal inline fun ItemStack.ifNotEmpty(action: ItemStack.() -> Unit) {
+internal inline fun ItemStack.ifNotEmpty(action: () -> Unit) {
   if (type != AIR)
     action()
 }
 
-internal inline fun ItemStack?.isFull() = this == null || amount >= maxStackSize
-
 internal inline fun ItemStack?.hasSpace() = this != null && amount < maxStackSize
 
-internal inline fun ItemStack.ifHasSpace(action: ItemStack.(space: Int) -> Unit) {
+internal inline fun ItemStack.ifHasSpace(action: (space: Int) -> Unit) {
   val space = maxStackSize - amount
   if (space > 0)
     action(space)
 }
 
 internal inline fun ItemStack?.freeSpace() = if (this == null) 0 else maxStackSize - amount
-
-internal infix fun ItemStack?.isCompatibleWith(other: ItemStack?) = this != null && this.isSimilar(other)
 
 internal var ItemStack?.size: Int
   get()  = this?.amount ?: 0
@@ -98,39 +94,12 @@ internal inline fun ItemStack?.clone(size: Int): ItemStack {
   return if (this == null) Air else ItemStack(this).apply { amount = size }
 }
 
-internal inline infix fun ItemStack?.fillWith(other: ItemStack?): ItemStack {
-  // Calculate the amount of space available in the slotted stack.
-  val space = this!!.freeSpace()
-
-  // If there is enough room in the slotted stack to contain the entire
-  // cursor stack:
-  if (other!!.size <= space) {
-    // Put the entire cursor stack into the slot.
-
-    // Update the slotted stack quantity.
-    amount += other.size
-
-    // Clear out the cursor slot.
-    return Air
-  } else {
-    // Put the amount that we can fit into the slotted stack.
-
-    // Max out the slotted stack.
-    amount = maxStackSize
-
-    // Reduce the cursor stack quantity.
-    other.amount -= space
-
-    return other
-  }
-}
-
-internal inline fun ItemStack.ifCompressible(action: ItemStack.() -> Unit) {
+internal inline fun ItemStack.ifCompressible(action: (ItemStack) -> Unit) {
   if (this in Compressibles)
-    action()
+    action(this)
 }
 
-internal inline fun ItemStack.ifSimilar(other: ItemStack?, action: ItemStack.(other: ItemStack) -> Unit) {
+internal inline fun ItemStack.ifSimilar(other: ItemStack?, action: (other: ItemStack) -> Unit) {
   if (isSimilar(other))
     action(other!!)
 }
