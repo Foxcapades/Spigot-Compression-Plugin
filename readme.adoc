@@ -29,15 +29,27 @@ compressed items.
 === Commands
 
 `/compress`::
-  Command to open the Compression Workbench user interface. +
-  Requires the `block-compression.gui` permission.
+Command to open the Compression Workbench user interface. +
++
+*Requires Permission*: `block-compression.gui`
+
 `/zip`::
   Alias of `/compress`.
+
+`/bcgive`::
+Usage: `/bcgive <player> <item-id> <level(0-9)> <qty>`
++
+Command to give a stack of compressed items to a target player.
++
+*Requires Permission*: `block-compression.give`
 
 === Permissions
 
 `block-compression.gui`::
-  Grants access to the `/compress` command.
+Grants access to the `/compress` command.
+
+`block-compression.give`::
+Grants access to the `/bcgive` command.
 
 == Configuration
 
