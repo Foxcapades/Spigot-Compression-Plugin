@@ -11,9 +11,7 @@ internal class CraftInventory(private val raw: Inventory) {
   private val materialized: Boolean
     get() {
       val cur = raw.getItem(0) ?: return false
-      Facade.logTrace("materialized:1")
       ifSingleStack { return cur.amount < 9 }
-      Facade.logTrace("materialized:2")
       return false
     }
 
@@ -31,7 +29,6 @@ internal class CraftInventory(private val raw: Inventory) {
    * result present.
    */
   fun popResult(): ItemStack {
-    Facade.logTrace("CraftInventory#popResult()")
 
     val out = raw.getItem(0) ?: throw IllegalStateException("Attempted to pop a non-existent result.")
 
@@ -58,7 +55,6 @@ internal class CraftInventory(private val raw: Inventory) {
    * result present.
    */
   fun splitResult(): ItemStack {
-    Facade.logTrace("CraftInventory#splitResult()")
     val tmp = raw.getItem(0) ?: throw IllegalStateException("Attempted to split a non-existent result.")
 
     if (!materialized)
@@ -419,7 +415,6 @@ internal class CraftInventory(private val raw: Inventory) {
   }
 
   private fun reduceAllBy(qty: Int) {
-    Facade.logTrace("CraftInventory#reduceAllBy(qty=%d)", qty)
     eachNonEmpty { index, stack ->
       when {
         stack.amount > qty  -> stack.amount -= qty
@@ -430,7 +425,6 @@ internal class CraftInventory(private val raw: Inventory) {
   }
 
   fun calculateResult() {
-    Facade.logTrace("CraftInventory#calculateResult()")
     ifSingleStack {
       it.ifCompressible {
 
