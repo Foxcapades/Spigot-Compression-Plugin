@@ -24,6 +24,8 @@ compressed items.
 </p>
 ++++
 
+https://imgur.com/a/aedDwCR[Video/Screenshots (Imgur)]
+
 == Usage
 
 === Commands
