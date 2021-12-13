@@ -12,7 +12,6 @@ import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.stream.Collectors
-import java.util.stream.IntStream
 import java.util.stream.Stream
 
 internal object GiveExecutor : CommandExecutor, TabCompleter {
@@ -84,11 +83,7 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
         .filter { it.startsWith(args[1]) }
         .collect(Collectors.toList())
       3 -> levels
-      4 -> Material.matchMaterial(args[1])?.let {
-        IntStream.rangeClosed(1, it.maxStackSize)
-          .mapToObj(Integer::toString)
-          .collect(Collectors.toList())
-      }
+      4 -> listOf("1", Material.matchMaterial(args[1])?.maxStackSize?.toString() ?: "64")
       else -> null
     }
   }
