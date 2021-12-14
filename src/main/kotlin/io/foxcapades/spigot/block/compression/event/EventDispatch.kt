@@ -3,8 +3,10 @@
 package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.consts.CompressorTitle
+import io.foxcapades.spigot.block.compression.event.handler.BlockPlaceHandler
 import org.bukkit.Material.AIR
 import org.bukkit.event.*
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.inventory.*
 import org.bukkit.event.inventory.InventoryType.*
 import org.bukkit.inventory.ItemStack
@@ -59,5 +61,10 @@ object EventDispatch : Listener {
 
     for (v in remain.values)
       player.world.dropItem(player.location, v)
+  }
+
+  @EventHandler
+  fun onBlockPlace(event: BlockPlaceEvent) {
+    BlockPlaceHandler.handle(BCBlockPlaceEvent(event))
   }
 }
