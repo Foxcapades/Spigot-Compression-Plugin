@@ -62,7 +62,41 @@ Grants access to the `/bcgive` command.
 
 == Configuration
 
-The plugin reads what blocks are allowed to be (de)compressed from 2 files:
+Block interaction to open the compression workbench can be configured with the
+plugin's `config.yml` file:
+
+.plugin.yml
+[source, yaml]
+----
+# Configures whether/how players can open the compression workbench by
+# interacting with a block, while optionally holding a "key" item to enable the
+# interaction.
+#
+# For example, if set to `target: minecraft:fletching_table` and
+# `holding: minecraft:diamond` then players with the correct permissions will be
+# able to open the crafting workbench by right clicking a diamond against a
+# fletching table.
+open-on-interact:
+  # Whether opening the crafting workbench by interacting with a block is
+  # enabled.
+  #
+  # Values: true|false
+  enabled: true
+  # ID of the target block that must be interacted with (right clicked on) to
+  # open the crafting workbench.
+  #
+  # Values: <any valid block id>
+  target:  minecraft:fletching_table
+  # ID of the item that must be held by the player when interacting with
+  # (right clicking) the target block.
+  #
+  # To disable an item requirement, set to `minecraft:air`.
+  #
+  # Values: <any valid item id>
+  holding: minecraft:diamond
+----
+
+Additionally the plugin reads what blocks are allowed to be (de)compressed from 2 files:
 https://github.com/Foxcapades/Spigot-Compression-Plugin/blob/main/src/main/resources/compressible-items.txt[`compressible-items.txt`]
 and https://github.com/Foxcapades/Spigot-Compression-Plugin/blob/main/src/main/resources/compressible-blocks.txt[`compressible-blocks.txt`].
 
