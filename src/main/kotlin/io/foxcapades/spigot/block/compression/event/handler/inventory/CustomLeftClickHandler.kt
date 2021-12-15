@@ -1,10 +1,8 @@
-package io.foxcapades.spigot.block.compression.event.handler
+package io.foxcapades.spigot.block.compression.event.handler.inventory
 
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
-import io.foxcapades.spigot.block.compression.facades.Facade
 import io.foxcapades.spigot.block.compression.item.ifEmpty
 import io.foxcapades.spigot.block.compression.item.ifNotEmpty
-import org.bukkit.Material.AIR
 import org.bukkit.event.inventory.InventoryType.SlotType.CRAFTING
 import org.bukkit.event.inventory.InventoryType.SlotType.RESULT
 

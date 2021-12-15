@@ -1,4 +1,4 @@
-package io.foxcapades.spigot.block.compression.event.handler
+package io.foxcapades.spigot.block.compression.event.handler.world
 
 import io.foxcapades.spigot.block.compression.compressible.CompressionLevel.None
 import io.foxcapades.spigot.block.compression.event.BCBlockPlaceEvent

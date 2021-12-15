@@ -1,4 +1,4 @@
-package io.foxcapades.spigot.block.compression.event.handler
+package io.foxcapades.spigot.block.compression.event.handler.inventory
 
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
 

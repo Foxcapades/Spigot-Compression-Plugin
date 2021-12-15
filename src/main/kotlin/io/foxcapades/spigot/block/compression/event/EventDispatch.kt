@@ -3,12 +3,14 @@
 package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.consts.CompressorTitle
-import io.foxcapades.spigot.block.compression.event.handler.BlockPlaceHandler
+import io.foxcapades.spigot.block.compression.event.handler.world.BlockPlaceHandler
+import io.foxcapades.spigot.block.compression.event.handler.world.InteractHandler
 import org.bukkit.Material.AIR
 import org.bukkit.event.*
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.inventory.*
 import org.bukkit.event.inventory.InventoryType.*
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
 object EventDispatch : Listener {
@@ -64,7 +66,10 @@ object EventDispatch : Listener {
   }
 
   @EventHandler
-  fun onBlockPlace(event: BlockPlaceEvent) {
+  fun onBlockPlace(event: BlockPlaceEvent) =
     BlockPlaceHandler.handle(BCBlockPlaceEvent(event))
-  }
+
+  @EventHandler
+  fun onPlayerInteract(event: PlayerInteractEvent) =
+    InteractHandler.handle(BCPlayerInteractEvent(event))
 }

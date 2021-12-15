@@ -6,13 +6,15 @@ import io.foxcapades.spigot.block.compression.facades.Facade
 import java.io.*
 
 internal object FileManager {
-  const val BlockConfigFileName = "compressible-blocks.txt"
-  const val ItemConfigFileName = "compressible-items.txt"
+  const val BlockConfigFileName  = "compressible-blocks.txt"
+  const val ItemConfigFileName   = "compressible-items.txt"
+  const val GlobalConfigFileName = "config.yml"
 
   fun createLocalConfigsIfNeeded() {
     ensureDataFolder()
     ensureBlockConfig()
     ensureItemConfig()
+    ensureGlobalConfig()
   }
 
   inline fun getBlockConfig() = file(BlockConfigFileName)
@@ -32,6 +34,11 @@ internal object FileManager {
   private inline fun ensureDataFolder() {
     if (!Facade.dataFolder.exists())
       Facade.dataFolder.mkdir()
+  }
+
+  private inline fun ensureGlobalConfig() {
+    if (!file(GlobalConfigFileName).exists())
+      copyFromInternal(GlobalConfigFileName)
   }
 
   private inline fun copyFromInternal(fileName: String) {

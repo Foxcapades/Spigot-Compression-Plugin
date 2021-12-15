@@ -3,7 +3,12 @@
 package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.consts.CompressorTitle
-import io.foxcapades.spigot.block.compression.event.handler.*
+import io.foxcapades.spigot.block.compression.event.handler.inventory.*
+import io.foxcapades.spigot.block.compression.event.handler.inventory.CustomLeftClickHandler
+import io.foxcapades.spigot.block.compression.event.handler.inventory.CustomRightClickHandler
+import io.foxcapades.spigot.block.compression.event.handler.inventory.CustomShiftLeftClickHandler
+import io.foxcapades.spigot.block.compression.event.handler.inventory.CustomShiftRightClickHandler
+import io.foxcapades.spigot.block.compression.event.handler.inventory.StandardShiftLeftClickHandler
 import org.bukkit.event.inventory.ClickType.*
 import org.bukkit.event.inventory.InventoryClickEvent
 
