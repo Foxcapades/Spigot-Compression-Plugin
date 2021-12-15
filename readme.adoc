@@ -48,7 +48,14 @@ Command to give a stack of compressed items to a target player.
 === Permissions
 
 `block-compression.gui`::
-Grants access to the `/compress` command.
+Grants access to the `/compress` and `/zip` commands as well as accessing the
+compression workbench via block interaction.
+
+`block-compression.gui.command`::
+Grants access to the `/compress` and `/zip` commands.
+
+`block-compression.gui.block`::
+Grants access to accessing the compression workbench via block interaction.
 
 `block-compression.give`::
 Grants access to the `/bcgive` command.
