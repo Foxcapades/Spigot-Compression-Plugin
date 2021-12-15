@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
+@Suppress("NOTHING_TO_INLINE")
 internal object GiveExecutor : CommandExecutor, TabCompleter {
   private val levels = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
 
@@ -32,7 +33,8 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
       .flatMap { name -> playerStream().filter { it.playerListName == name }.findFirst() }
       .orElse(null) ?: return false
 
-    if (args[1] !in Compressibles)
+    val material = if (args[1].startsWith("minecraft:")) args[1] else "minecraft:${args[1]}"
+    if (material !in Compressibles)
       return false
 
     if (args[2] !in levels)
@@ -55,7 +57,7 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
     }
 
     val rem = player.inventory.addItem(
-      ItemStack(Material.matchMaterial(args[1])!!)
+      ItemStack(Material.matchMaterial(material)!!)
         .compressionLevel(CompressionLevel.from(lvl), qty)
     )
 
@@ -80,7 +82,7 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
         .filter { it.startsWith(args[0]) }
         .collect(Collectors.toList())
       2 -> Compressibles.allowed.stream()
-        .filter { it.startsWith(args[1]) }
+        .filter { it.contains(args[1], true) }
         .collect(Collectors.toList())
       3 -> levels
       4 -> listOf("1", Material.matchMaterial(args[1])?.maxStackSize?.toString() ?: "64")
