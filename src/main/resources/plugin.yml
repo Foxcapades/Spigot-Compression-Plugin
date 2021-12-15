@@ -9,14 +9,25 @@ commands:
   compress:
     id: bcp-compress
     description: Open the item compression UI.
-    usage: /<command>
+    usage: /compress
     aliases:
       - zip
-    permission: block-compression.gui
+    permission: block-compression.gui.command
     permission-message: You do not have permission to use this command.
   bcgive:
     id: bcp-give
     description: Gives a user a compressed item at the specified level.
-    usage: /command <user> <item> <lvl> <qty>
+    usage: /bcgive <user> <item> <lvl> <qty>
     permission: block-compression.give
     permission-message: You do not have permission to use this command.
+
+permissions:
+  block-compression.gui:
+    description: Grants access to to open the compression UI
+    default: op
+    children:
+      block-compression.gui.command: true
+      block-compression.gui.block: true
+  block-compression.give:
+    description: Grants access to the /bcgive command.
+    default: op

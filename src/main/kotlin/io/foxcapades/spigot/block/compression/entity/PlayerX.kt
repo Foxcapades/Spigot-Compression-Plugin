@@ -10,3 +10,11 @@ import org.bukkit.event.inventory.InventoryType.WORKBENCH
 internal inline fun Player.openCompressionWorkbench() {
   openInventory(Facade.server.createInventory(this, WORKBENCH, CompressorTitle))
 }
+
+internal inline fun Player.hasAnyPerm(vararg perms: String): Boolean {
+  for (perm in perms)
+    if (hasPermission(perm))
+      return true
+
+  return false
+}
