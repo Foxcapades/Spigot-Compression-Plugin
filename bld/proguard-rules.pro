@@ -17,6 +17,8 @@
   public void onInventoryClick(...);
   public void onInventoryDrag(...);
   public void onInventoryClose(...);
+  public void onBlockPlace(...);
+  public void onPlayerInteract(...);
 }
 
 -keepattributes RuntimeVisibleAnnotations
