@@ -424,15 +424,17 @@ internal class CraftInventory(private val raw: Inventory) {
     }
   }
 
+  /**
+   * Determines if the current contents of the crafting grid are a valid
+   * (de)compression recipe and updates the result slot accordingly.
+   */
   fun calculateResult() {
     ifSingleStack {
-      it.ifCompressible {
 
-        val lvl = it.compressionLevel()
+      val lvl = it.compressionLevel()
 
-        if (lvl.hasPrevious)
-          raw.setItem(0, it.compressionLevel(lvl.previous, 9))
-      }
+      if (lvl.hasPrevious)
+        raw.setItem(0, it.compressionLevel(lvl.previous, 9))
 
       return
     }
