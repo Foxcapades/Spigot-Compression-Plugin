@@ -414,6 +414,10 @@ internal class CraftInventory(private val raw: Inventory) {
     }
   }
 
+  /**
+   * Reduces the quantity of all non-empty stacks in the crafting grid by the
+   * given amount ([qty]).
+   */
   private fun reduceAllBy(qty: Int) {
     eachNonEmpty { index, stack ->
       when {
