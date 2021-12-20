@@ -78,7 +78,6 @@ minecraft:melon_seeds
 minecraft:melon_slice
 minecraft:mutton
 minecraft:nautilus_shell
-minecraft:nether_quartz_ore
 minecraft:nether_star
 minecraft:orange_dye
 minecraft:painting
@@ -95,6 +94,7 @@ minecraft:pufferfish
 minecraft:pumpkin_pie
 minecraft:pumpkin_seeds
 minecraft:purple_dye
+minecraft:quartz
 minecraft:rabbit
 minecraft:rabbit_foot
 minecraft:rabbit_hide
