@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender
 
 object ReloadExecutor : CommandExecutor {
   override fun onCommand(
-    sender: CommandSender,
+    sender:  CommandSender,
     command: Command,
-    label: String,
-    args: Array<out String>
+    label:   String,
+    args:    Array<out String>
   ): Boolean {
     sender.sendMessage("Reloading compressible blocks and items configs.")
 
