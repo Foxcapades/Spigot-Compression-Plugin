@@ -20,6 +20,12 @@ commands:
     usage: /bcgive <user> <item> <lvl> <qty>
     permission: block-compression.give
     permission-message: You do not have permission to use this command.
+  bcreload:
+    id: bcp-reload
+    description: Reloads the allowed compressible items/blocks configs.
+    usage: /bcreload
+    permission: block-compression.reload
+    permission-message: You do not have permission to use this command.
 
 permissions:
   block-compression.gui:
@@ -30,4 +36,7 @@ permissions:
       block-compression.gui.block: true
   block-compression.give:
     description: Grants access to the /bcgive command.
+    default: op
+  block-compression.reload:
+    description: Grants access to the /bcreload command.
     default: op
