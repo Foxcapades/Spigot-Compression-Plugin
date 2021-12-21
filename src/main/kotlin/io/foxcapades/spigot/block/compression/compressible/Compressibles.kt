@@ -15,10 +15,6 @@ internal object Compressibles {
   @JvmStatic
   val allowed: Set<String> = HashSet(1024)
 
-  init {
-    populate()
-  }
-
   @JvmStatic
   operator fun contains(namespace: String?) = namespace in allowed
 

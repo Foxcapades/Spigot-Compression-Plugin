@@ -9,10 +9,6 @@ import java.nio.charset.StandardCharsets
 
 internal object Config {
 
-  init {
-    reload()
-  }
-
   object OpenOnInteract {
     internal const val KeyRoot    = "open-on-interact"
     internal const val KeyEnabled = "enabled"
@@ -43,7 +39,7 @@ internal object Config {
       }
 
       if (KeyHolding in values) {
-        var id = values[KeyTarget] as String
+        var id = values[KeyHolding] as String
 
         if (!id.startsWith("minecraft:"))
           id = "minecraft:$id"
@@ -52,6 +48,8 @@ internal object Config {
           ?: throw IllegalStateException("Invalid open-on-interface.holding value: ${values[KeyHolding]}")
       }
     }
+
+    override fun toString() = "OpenOnInteract{enabled=$enabled, target=$targetBlockType, holding=$keyItemType}"
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -61,13 +59,13 @@ internal object Config {
     FileManager.getPluginConfig()
       .reader(StandardCharsets.UTF_8)
       .use {
-        Yaml().loadAll(it)
-      }
-      .forEach {
-        val tmp = it as Map<String, Any>
+        val yaml = Yaml().loadAll(it)
+        yaml.forEach { doc ->
+         val tmp = doc as Map<String, Any>
 
-        if (OpenOnInteract.KeyRoot in tmp)
-          OpenOnInteract.loadFrom(tmp)
+          if (OpenOnInteract.KeyRoot in tmp)
+            OpenOnInteract.loadFrom(tmp[OpenOnInteract.KeyRoot] as Map<String, Any>)
+        }
       }
   }
 }
