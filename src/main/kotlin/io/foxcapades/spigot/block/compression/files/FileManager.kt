@@ -17,6 +17,8 @@ internal object FileManager {
     ensureGlobalConfig()
   }
 
+  inline fun getPluginConfig() = file(GlobalConfigFileName)
+
   inline fun getBlockConfig() = file(BlockConfigFileName)
 
   inline fun getItemConfig() = file(ItemConfigFileName)

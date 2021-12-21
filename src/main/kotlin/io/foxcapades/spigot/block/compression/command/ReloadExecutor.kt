@@ -1,5 +1,6 @@
 package io.foxcapades.spigot.block.compression.command
 
+import io.foxcapades.spigot.block.compression.Config
 import io.foxcapades.spigot.block.compression.compressible.Compressibles
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -13,7 +14,10 @@ object ReloadExecutor : CommandExecutor {
     args: Array<out String>
   ): Boolean {
     sender.sendMessage("Reloading compressible blocks and items configs.")
+
     Compressibles.reload()
+    Config.reload()
+
     return true
   }
 }

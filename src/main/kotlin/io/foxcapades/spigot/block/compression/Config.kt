@@ -1,5 +1,6 @@
 package io.foxcapades.spigot.block.compression
 
+import io.foxcapades.spigot.block.compression.files.FileManager
 import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
 
@@ -20,5 +21,9 @@ internal object Config {
     inline val keyItemType: Material
       get() = Material.matchMaterial(raw["$Key.holding"] as String)
         ?: throw IllegalStateException("Invalid $Key.holding value.  Must be a valid material id.")
+  }
+
+  fun reload() {
+    raw.load(FileManager.getPluginConfig())
   }
 }
