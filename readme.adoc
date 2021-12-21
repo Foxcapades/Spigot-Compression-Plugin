@@ -1,4 +1,5 @@
 = Spigot Block Compression Plugin
+:toc:
 
 **FOR THE HOARD!**
 
@@ -26,9 +27,8 @@ compressed items.
 
 https://imgur.com/a/aedDwCR[Video/Screenshots (Imgur)]
 
-== Usage
 
-=== Commands
+== Commands
 
 `/compress`::
 Command to open the Compression Workbench user interface. +
@@ -45,7 +45,16 @@ Command to give a stack of compressed items to a target player.
 +
 *Requires Permission*: `block-compression.give`
 
-=== Permissions
+`/bcreload`::
+Usage: `/bcreload`
++
+Command to reload the the plugin config and the allowed compressible
+items/blocks list files from disk without having to restart the server.
++
+*Requires Permission*: `block-compression.reload`
+
+
+== Permissions
 
 `block-compression.gui`::
 Grants access to the `/compress` and `/zip` commands as well as accessing the
@@ -59,6 +68,10 @@ Grants access to accessing the compression workbench via block interaction.
 
 `block-compression.give`::
 Grants access to the `/bcgive` command.
+
+`block-compression.reload`::
+Grants access to the `/bcreload` command.
+
 
 == Configuration
 
@@ -86,7 +99,7 @@ open-on-interact:
   # open the crafting workbench.
   #
   # Values: <any valid block id>
-  target:  minecraft:fletching_table
+  target: minecraft:fletching_table
   # ID of the item that must be held by the player when interacting with
   # (right clicking) the target block.
   #
