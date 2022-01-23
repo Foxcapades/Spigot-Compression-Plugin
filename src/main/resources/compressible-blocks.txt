@@ -288,6 +288,7 @@ minecraft:granite_slab
 minecraft:granite_stairs
 minecraft:granite_wall
 minecraft:gravel
+minecraft:grass_block
 
 minecraft:gray_candle
 minecraft:gray_carpet

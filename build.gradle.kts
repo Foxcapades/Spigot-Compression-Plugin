@@ -7,7 +7,7 @@ plugins {
 }
 
 group   = "io.foxcapades"
-version = "1.6.0"
+version = "1.6.1"
 
 repositories {
   mavenCentral()
