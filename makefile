@@ -3,11 +3,11 @@ nothing:
 
 .PHONY: build
 build:
-	gradle shadowJar -Dorg.gradle.java.home=/usr/lib/jvm/java-16-openjdk-amd64
+	gradle shadowJar -Dorg.gradle.java.home=/home/ellie/.jdks/corretto-16.0.2
 
 .PHONY: release
 release:
-	gradle shadowJar compress -Dorg.gradle.java.home=/usr/lib/jvm/java-16-openjdk-amd64
+	gradle shadowJar compress -Dorg.gradle.java.home=/home/ellie/.jdks/corretto-16.0.2
 
 .PHONY: bump-major
 bump-major:
