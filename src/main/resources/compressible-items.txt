@@ -37,6 +37,7 @@ minecraft:cookie
 minecraft:cyan_dye
 minecraft:dragon_breath
 minecraft:dried_kelp
+minecraft:echo_shard
 minecraft:egg
 minecraft:enchanted_golden_apple
 minecraft:end_crystal
@@ -76,6 +77,7 @@ minecraft:magenta_dye
 minecraft:magma_cream
 minecraft:melon_seeds
 minecraft:melon_slice
+minecraft:music_disc_5
 minecraft:music_disc_13
 minecraft:music_disc_cat
 minecraft:music_disc_blocks
@@ -112,6 +114,7 @@ minecraft:quartz
 minecraft:rabbit
 minecraft:rabbit_foot
 minecraft:rabbit_hide
+minecraft:recovery_compass
 minecraft:red_dye
 minecraft:redstone
 minecraft:rotten_flesh
