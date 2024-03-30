@@ -1,6 +1,5 @@
 package io.foxcapades.spigot.block.compression.wrap
 
-import io.foxcapades.spigot.block.compression.facades.Facade
 import io.foxcapades.spigot.block.compression.item.*
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack

@@ -1,13 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin("jvm") version "1.6.0"
+  kotlin("jvm") version "1.9.23"
   `java-library`
   id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group   = "io.foxcapades"
-version = "1.9.0"
+version = "1.10.0"
 
 repositories {
   mavenCentral()
@@ -16,30 +16,20 @@ repositories {
 }
 
 dependencies {
-  implementation("org.jetbrains.kotlin", "kotlin-stdlib", "1.6.0")
-//  implementation("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "1.6.0")
-  compileOnly("org.spigotmc", "spigot-api", "1.18-R0.1-SNAPSHOT")
-
-  testImplementation(kotlin("test"))
-  testImplementation(platform("org.junit:junit-bom:5.8.1"))
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation("org.mockito:mockito-core:4.0.0")
-  testImplementation("io.mockk:mockk:1.12.1")
-  testCompileOnly("org.spigotmc", "spigot-api", "1.18-R0.1-SNAPSHOT")
+  compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
 }
 
 kotlin {
   jvmToolchain {
-    (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(16))
+    languageVersion.set(JavaLanguageVersion.of(17))
+    vendor.set(JvmVendorSpec.AMAZON)
   }
 }
 
 tasks.withType(KotlinCompile::class.java).all {
-  this.requiredServices
-
   kotlinOptions {
-    jvmTarget = "16"
-    freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    jvmTarget = "17"
+    freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
   }
 }
 

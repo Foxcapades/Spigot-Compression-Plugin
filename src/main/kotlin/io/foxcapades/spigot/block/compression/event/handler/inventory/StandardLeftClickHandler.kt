@@ -1,11 +1,11 @@
 package io.foxcapades.spigot.block.compression.event.handler.inventory
 
-import io.foxcapades.spigot.block.compression.compressible.CompressionLevel.None
+import io.foxcapades.spigot.block.compression.compressible.CompressionLevel
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
 import io.foxcapades.spigot.block.compression.item.ifCompressionLevelNot
 import io.foxcapades.spigot.block.compression.item.isNotEmpty
 
-internal object StandardLeftClickHandler : ClickHandler {
+internal data object StandardLeftClickHandler : ClickHandler {
   override fun handle(event: BCInvClickEvent) {
     if (event.cursor.isNotEmpty())
       handleStandardItemPlace(event)
@@ -14,7 +14,7 @@ internal object StandardLeftClickHandler : ClickHandler {
   fun handleStandardItemPlace(event: BCInvClickEvent) =
     with(event) {
       ifUserClickedTopInv {
-        cursor.ifCompressionLevelNot(None) {
+        cursor.ifCompressionLevelNot(CompressionLevel.None) {
           ifTopInvIsNotCompressedItemSafe { event.cancel() }
         }
       }

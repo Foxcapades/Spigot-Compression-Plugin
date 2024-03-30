@@ -3,7 +3,7 @@ package io.foxcapades.spigot.block.compression.event.handler.inventory
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
 import io.foxcapades.spigot.block.compression.item.ifNotEmpty
 
-internal object CustomShiftRightClickHandler : ClickHandler {
+internal data object CustomShiftRightClickHandler : ClickHandler {
   override fun handle(event: BCInvClickEvent) {
     event.ifUserClickedBottomInv {
       inventorySlot.ifNotEmpty {

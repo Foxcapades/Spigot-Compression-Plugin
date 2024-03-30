@@ -58,7 +58,7 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
 
     val rem = player.inventory.addItem(
       ItemStack(Material.matchMaterial(material)!!)
-        .compressionLevel(CompressionLevel.from(lvl), qty)
+        .compressionLevel(CompressionLevel(lvl), qty)
     )
 
     for (v in rem.values)

@@ -1,7 +1,5 @@
 package io.foxcapades.spigot.block.compression.event
 
-import io.foxcapades.spigot.block.compression.compressible.CompressionLevel.None
-import io.foxcapades.spigot.block.compression.facades.Facade
 import io.foxcapades.spigot.block.compression.item.compressionLevel
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType.*
@@ -22,7 +20,7 @@ internal fun handleDragEvent(event: InventoryDragEvent) {
     else        -> { /* continue */ }
   }
 
-  if (event.newItems.values.first().compressionLevel() == None) {
+  if (event.newItems.values.first().compressionLevel().value == 0) {
     return
   }
 

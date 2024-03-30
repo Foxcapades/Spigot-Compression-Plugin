@@ -4,7 +4,7 @@ import io.foxcapades.spigot.block.compression.compressible.CompressionLevel
 import org.bukkit.Material
 import java.util.*
 
-object I18N {
+internal object I18N {
 
   private val stacksBundle: ResourceBundle
 

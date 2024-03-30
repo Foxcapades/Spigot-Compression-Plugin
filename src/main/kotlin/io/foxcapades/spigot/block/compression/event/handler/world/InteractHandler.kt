@@ -5,7 +5,6 @@ import io.foxcapades.spigot.block.compression.consts.Permissions
 import io.foxcapades.spigot.block.compression.entity.hasAnyPerm
 import io.foxcapades.spigot.block.compression.entity.openCompressionWorkbench
 import io.foxcapades.spigot.block.compression.event.BCPlayerInteractEvent
-import io.foxcapades.spigot.block.compression.facades.Facade
 import org.bukkit.Material
 
 internal object InteractHandler {

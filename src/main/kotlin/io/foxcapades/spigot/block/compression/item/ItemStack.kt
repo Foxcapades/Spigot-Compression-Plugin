@@ -4,7 +4,6 @@ package io.foxcapades.spigot.block.compression.item
 
 import io.foxcapades.spigot.block.compression.compressible.Compressibles
 import io.foxcapades.spigot.block.compression.compressible.CompressionLevel
-import io.foxcapades.spigot.block.compression.compressible.CompressionLevel.None
 import io.foxcapades.spigot.block.compression.facades.Facade
 import io.foxcapades.spigot.block.compression.facades.I18N
 import org.bukkit.Material.AIR
@@ -17,20 +16,20 @@ import kotlin.contracts.contract
 const val metaKey = "bcp_lvl"
 
 internal inline fun ItemStack.compressionLevel(): CompressionLevel {
-  return CompressionLevel.from(itemMeta?.persistentDataContainer?.get(Facade.key(metaKey), PersistentDataType.BYTE) ?: return None)
+  return CompressionLevel(itemMeta?.persistentDataContainer?.get(Facade.key(metaKey), PersistentDataType.BYTE) ?: 0)
 }
 
 internal inline fun ItemStack.ifCompressionLevelNot(lvl: CompressionLevel, action: ItemStack.(lvl: CompressionLevel) -> Unit) {
   val compressionLevel = compressionLevel()
-  if (compressionLevel !== lvl)
+  if (compressionLevel.value != lvl.value)
     action(lvl)
 }
 
-fun ItemStack.compressionLevel(lvl: CompressionLevel, qty: Int): ItemStack {
+internal fun ItemStack.compressionLevel(lvl: CompressionLevel, qty: Int): ItemStack {
   val out = ItemStack(this)
   out.amount = qty
 
-  if (lvl == None) {
+  if (lvl.value == 0) {
     out.itemMeta = null
   } else {
     val meta = out.itemMeta ?: throw IllegalStateException()

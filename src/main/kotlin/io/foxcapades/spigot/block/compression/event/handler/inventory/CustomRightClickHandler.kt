@@ -6,7 +6,7 @@ import io.foxcapades.spigot.block.compression.item.ifNotEmpty
 import org.bukkit.event.inventory.InventoryType.SlotType.CRAFTING
 import org.bukkit.event.inventory.InventoryType.SlotType.RESULT
 
-internal object CustomRightClickHandler : ClickHandler {
+internal data object CustomRightClickHandler : ClickHandler {
   override fun handle(event: BCInvClickEvent) {
     event.ifUserClickedTopInv { return topClick() }
     event.ifUserClickedBottomInv { return bottomClick() }
