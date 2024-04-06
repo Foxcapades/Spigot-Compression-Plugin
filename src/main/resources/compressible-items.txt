@@ -124,13 +124,18 @@ minecraft:spectral_arrow
 minecraft:spider_eye
 minecraft:stick
 minecraft:sugar
-minecraft:suspicious_stew
 minecraft:sweet_berries
-minecraft:tipped_arrow
 minecraft:tropical_fish
 minecraft:wheat_seeds
 minecraft:white_dye
 minecraft:yellow_dye
+
+minecraft:spyglass
+minecraft:string
+minecraft:leather_horse_armor
+minecraft:iron_horse_armor
+minecraft:diamond_horse_armor
+minecraft:golden_horse_armor
 
 minecraft:brush
 minecraft:music_disc_relic

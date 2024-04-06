@@ -861,3 +861,5 @@ minecraft:sculk_sensor
 minecraft:sculk_shrieker
 minecraft:sculk_vein
 minecraft:calibrated_sculk_sensor
+
+minecraft:cake
