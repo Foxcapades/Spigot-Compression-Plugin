@@ -1,0 +1,127 @@
+# The `additional-items` map allows adding custom entries to the set of items
+# that the block-compression plugin will allow users to compress.
+#
+# Each map item should be named with the fully qualified item name, such as
+# `minecraft:acacia_boat`.
+#
+# Each item must itself contain a value or sub-mapping named `name` that
+# contains either a single value for the item's name, or a mapping of locale
+# codes and/or the key `default` to the name in that locale.  This mapping is
+# how the block-compression plugin knows how to construct custom names for
+# stacks of compressed items.
+#
+# **Example: Basic Setup**
+#
+#   additional-items:
+#     rad_dude_skateboards:skateboard:
+#       name: Skateboard
+#
+# **Example: Multiple Languages**
+#
+#   additional-items:
+#     rad_dude_skateboards:skateboard:
+#       name:
+#         default: Skateboard
+#         en: Skateboard
+#         hu-HU: Gördeszka
+#         no-NO: Rullebrett
+additional-items:
+
+
+# The `item-rules` array allows the customization of how the block-compression
+# plugin handles specified items.
+#
+# This configuration is used to restrict what items are compressible and by
+# whom.
+#
+# Array entries are maps of configuration options applied to the item or items
+# specified in each entry's `items` list.
+item-rules:
+
+- # The `items` array defines the individual items that the rule applies to.
+  #
+  # If the `items` array is omitted from a rule, or is empty, the rule will be
+  # ignored.
+  items:
+  - minecraft:acacia_boat
+  - minecraft:bamboo_raft
+  - minecraft:birch_boat
+  - minecraft:cherry_boat
+  - minecraft:dark_oak_boat
+  - minecraft:jungle_boat
+  - minecraft:mangrove_boat
+  - minecraft:oak_boat
+  - minecraft:spruce_boat
+
+  # The `permissions` object defines how this item rule interacts with your
+  # server's permissions.
+  #
+  # If the `permissions` object is omitted from a rule, or is empty, the default
+  # plugin permissions will be applied.
+  #
+  # The `permissions` object may contain one or more of 3 sub-objects, `all-of`,
+  # `any-of`, or `none-of`, which define the permission requirements.  In normal
+  # practice, the use of more than one type of permission requirement list on a
+  # single rule would rarely be necessary.
+  #
+  # All non-empty sub-objects are applied in an `AND` manner.
+  #
+  # **Example**
+  #
+  #   permissions:
+  #     all-of:
+  #     - foo
+  #     - bar
+  #     any-of:
+  #     - fizz
+  #     - buzz
+  #     none-of:
+  #     - baz
+  #
+  # Given the above example YAML, for a user to be able to compress the items
+  # specified in the `items` array, they must have both permissions `foo` and
+  # `bar` AND they must have at least one of the permissions `fizz` or `buzz`
+  # AND they must not have the permission `baz`.
+  #
+  # **Note**
+  #
+  # This permission configuration does not negate the need for a user to have at
+  # least one of the `block-compression.gui.*` permissions to use the
+  # block-compression plugin.
+  permissions:
+    # The `all-of` array defines a list of permissions of which a user must have
+    # been granted all of to be able to compress the items targeted by this
+    # rule.
+    all-of:
+    - custom-perms.wood
+    - custom-perms.boats
+    # The `any-of` array defines a list of permissions of which a user must have
+    # been granted at least one of to be able to compress the items targeted by
+    # this rule.
+    any-of:
+    - custom-perms.zip
+    - custom-perms.compress
+    # The `none-of` array defines a list of permissions which a user must not
+    # have been granted any of to be able to compress the items targeted by this
+    # rule.
+    none-of:
+    - custom-perms.blocked
+
+  # The `users` array defines a collection of users, by username, that are
+  # always allowed to compress the items targeted by this rule regardless of
+  # what is defined in the `permissions` rule object.
+  #
+  # If the `permissions` block is omitted and the users block is present, only
+  # the users defined in this list will be able to compress the items targeted
+  # by this rule.
+  #
+  # The presence of a user's name in this list does not negate the need for that
+  # user to have at least one of the `block-compression.gui.*` permissions to
+  # use the block-compression plugin.
+  users:
+  - MarySue
+
+  # The `enabled` property is a boolean value that sets whether the containing
+  # rule should be applied at all.  If set to `false` the rule definition will
+  # be ignored.
+  enabled: false
