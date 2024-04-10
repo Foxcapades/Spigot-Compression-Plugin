@@ -6,9 +6,9 @@
 #
 # Each item must itself contain a value or sub-mapping named `name` that
 # contains either a single value for the item's name, or a mapping of locale
-# codes and/or the key `default` to the name in that locale.  This mapping is
-# how the block-compression plugin knows how to construct custom names for
-# stacks of compressed items.
+# codes and the key `default` to the name in that locale and the
+# fallback/default name.  This mapping is how the block-compression plugin knows
+# how to construct custom names for stacks of compressed items.
 #
 # **Example: Basic Setup**
 #

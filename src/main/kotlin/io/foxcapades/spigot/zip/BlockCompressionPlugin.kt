@@ -14,12 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin
 class BlockCompressionPlugin : JavaPlugin() {
 
   internal companion object {
-    var instance: Plugin? = null
-      private set
+    val instance get() = instanceRef!!
+
+    private var instanceRef: Plugin? = null
   }
 
   init {
-    io.foxcapades.spigot.zip.BlockCompressionPlugin.Companion.instance = this
+    instanceRef = this
   }
 
   override fun onLoad() {

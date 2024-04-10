@@ -12,27 +12,29 @@ internal object Facade/* : Plugin*/ {
 
   var enableTrace = true
 
-  val dataFolder get() = io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.dataFolder
+  val dataFolder get() = BlockCompressionPlugin.instance.dataFolder
 
-  val server get() = io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.server
+  val server get() = BlockCompressionPlugin.instance.server
 
-  val name get() = io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.name
+  val name get() = BlockCompressionPlugin.instance.name
 
-  inline fun logInfo(log: String) = io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.logger.info(log)
+  inline fun logInfo(log: String) = BlockCompressionPlugin.instance.logger.info(log)
 
   inline fun logTrace(log: String, vararg fill: Any?) {
     if (!enableTrace)
       return
 
     if (fill.isNotEmpty())
-      io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.logger.info("[TRACE] ${log.format(*fill)}")
+      BlockCompressionPlugin.instance.logger.info("[TRACE] ${log.format(*fill)}")
     else
-      io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.logger.info("[TRACE] $log")
+      BlockCompressionPlugin.instance.logger.info("[TRACE] $log")
   }
 
-  inline fun key(key: String) = NamespacedKey(io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!, key)
+  inline fun logWarn(log: String) = BlockCompressionPlugin.instance.logger.warning(log)
+
+  inline fun key(key: String) = NamespacedKey(BlockCompressionPlugin.instance, key)
 
   fun runTask(op: () -> Unit) {
-    io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!.server.scheduler.runTask(io.foxcapades.spigot.zip.BlockCompressionPlugin.instance!!, op)
+    BlockCompressionPlugin.instance.server.scheduler.runTask(BlockCompressionPlugin.instance, op)
   }
 }
