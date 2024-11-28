@@ -1,49 +1,37 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-plugins {
-  kotlin("jvm") version "1.9.23"
-  `java-library`
-  id("com.github.johnrengelman.shadow") version "7.1.0"
+allprojects {
+  group = "io.foxcapades.mc"
+  version = "2.0.0-SNAPSHOT"
 }
 
-group   = "io.foxcapades"
-version = "1.10.1"
+val releaseDir = mkdir(project.layout.buildDirectory.dir("release"))
 
-repositories {
-  mavenCentral()
-  maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-  maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-}
+tasks.register("release") {
+  val releaseTasks = subprojects.asSequence()
+    .mapNotNull { it.tasks.findByName("release") }
+    .toList()
 
-dependencies {
-  compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
-}
+  val inputFiles = releaseTasks.flatMap { it.outputs.files }
+  val outputFiles = inputFiles.map { releaseDir.resolve(it.name) }
 
-kotlin {
-  jvmToolchain {
-    languageVersion.set(JavaLanguageVersion.of(17))
-    vendor.set(JvmVendorSpec.AMAZON)
+  dependsOn(releaseTasks)
+
+  inputs.files(inputFiles)
+  outputs.files(outputFiles)
+
+  doLast {
+    for (i in inputFiles.indices) {
+      inputFiles[i].copyTo(target = outputFiles[i], overwrite = true)
+    }
   }
 }
 
-tasks.withType(KotlinCompile::class.java).all {
-  kotlinOptions {
-    jvmTarget = "17"
-    freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-  }
-}
+tasks.register("clean") {
+  val cleanTasks = subprojects.asSequence()
+    .mapNotNull { it.tasks.findByName(":clean") }
+    .toList()
+    .toTypedArray()
 
-tasks.test {
-  useJUnitPlatform()
-}
+  dependsOn(*cleanTasks)
 
-tasks.register("compress", proguard.gradle.ProGuardTask::class.java) {
-  dependsOn(":shadowJar")
-
-  configuration("bld/proguard-rules.pro")
-
-  libraryjars(files(configurations.compileClasspath.get().files))
-
-  injars("build/libs/spigot-block-compression-$version-all.jar")
-  outjars("build/libs/spigot-block-compression.jar")
+  doLast { releaseDir.deleteRecursively() }
 }

@@ -28,6 +28,8 @@ internal inline fun ItemStack.ifCompressionLevelNot(lvl: CompressionLevel, actio
 internal fun ItemStack.compressionLevel(lvl: CompressionLevel, qty: Int): ItemStack {
   val out = ItemStack(this)
   out.amount = qty
+  val meta = out.itemMeta
+
 
   if (lvl.value == 0) {
     out.itemMeta = null
