@@ -1,22 +1,20 @@
 package io.foxcapades.spigot.block.compression.command
 
-import io.foxcapades.spigot.block.compression.compressible.Compressibles
-import io.foxcapades.spigot.block.compression.compressible.CompressionLevel
-import io.foxcapades.spigot.block.compression.facades.Facade
-import io.foxcapades.spigot.block.compression.item.compressionLevel
+import io.foxcapades.spigot.block.compression.Server
+import io.foxcapades.spigot.block.compression.compress.Compressibles
+import io.foxcapades.spigot.block.compression.compress.CompressionLevel
+import io.foxcapades.spigot.block.compression.compress.compress
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import java.util.stream.Collectors
 import java.util.stream.Stream
 
 @Suppress("NOTHING_TO_INLINE")
 internal object GiveExecutor : CommandExecutor, TabCompleter {
-  private val levels = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+  private val levels = Array(9) { ('1'.code + it).toChar().toString() }
 
   override fun onCommand(
     sender: CommandSender,
@@ -28,10 +26,12 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
       return false
 
     // Find the target player by name or return false
-    val player = playerNameStream().filter { it == args[0] }
+    val player = playerNameStream()
+      .filter { it == args[0] }
       .findFirst()
       .flatMap { name -> playerStream().filter { it.playerListName == name }.findFirst() }
-      .orElse(null) ?: return false
+      .orElse(null)
+      ?: return false
 
     val material = if (args[1].startsWith("minecraft:")) args[1] else "minecraft:${args[1]}"
     if (material !in Compressibles)
@@ -40,58 +40,69 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
     if (args[2] !in levels)
       return false
 
-    val lvl: Byte
-
-    try {
-      lvl = args[2].toByte()
+    val lvl = try {
+      CompressionLevel(args[2].toInt())
+    } catch (e: IllegalArgumentException) {
+      sender.sendMessage("&4${e.message}")
+      return false
     } catch (e: Exception) {
       return false
     }
 
-    val qty: Int
-
-    try {
-      qty = args[3].toInt()
+    val qty = try {
+      args[3].toInt()
     } catch (e: Exception) {
       return false
     }
 
-    val rem = player.inventory.addItem(
-      ItemStack(Material.matchMaterial(material)!!)
-        .compressionLevel(CompressionLevel(lvl), qty)
-    )
-
-    for (v in rem.values)
+    for (v in player.inventory.addItem(Material.matchMaterial(material)!!.compress(lvl, qty)).values)
       player.world.dropItem(player.location, v)
 
     return true
   }
 
-  override fun onTabComplete(
-    sender: CommandSender,
-    command: Command,
-    alias: String,
-    args: Array<out String>,
-  ): List<String>? {
-    return when (args.size) {
-      0 -> Facade.server.onlinePlayers.stream()
+  override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>) =
+    when (args.size) {
+      0 -> Server.onlinePlayers.asSequence()
         .map { it.playerListName }
-        .collect(Collectors.toList())
-      1 -> Facade.server.onlinePlayers.stream()
+        .toList()
+      1 -> Server.onlinePlayers.asSequence()
         .map { it.playerListName }
         .filter { it.startsWith(args[0]) }
-        .collect(Collectors.toList())
-      2 -> Compressibles.allowed.stream()
-        .filter { it.contains(args[1], true) }
-        .collect(Collectors.toList())
-      3 -> levels
-      4 -> listOf("1", Material.matchMaterial(args[1])?.maxStackSize?.toString() ?: "64")
+        .toList()
+      2 -> filterCompressibles(args[1])
+      3 -> levels.asList()
+      4 -> listOf("1", "64")
       else -> null
     }
-  }
 
-
-  private inline fun playerStream(): Stream<out Player> = Facade.server.onlinePlayers.stream()
+  private inline fun playerStream(): Stream<out Player> = Server.onlinePlayers.stream()
 
   private inline fun playerNameStream() = playerStream().map { it.playerListName }
+
+  private inline fun filterCompressibles(text: String): List<String> {
+    val primaryHits = ArrayList<String>(64)
+    val secondaryHits = ArrayList<String>(128)
+    val nsHits = ArrayList<String>(128)
+
+    for ((ns, key) in Compressibles) {
+      if (key.startsWith(text)) {
+        primaryHits.add(key)
+
+        if (text.length < 3 && primaryHits.size == 64)
+          return primaryHits
+
+        secondaryHits.add("$ns:$key")
+      } else if (ns.startsWith(text)) {
+        nsHits.add("$ns:key")
+      }
+    }
+
+    return ArrayList<String>(primaryHits.size + secondaryHits.size + nsHits.size)
+      .apply {
+        addAll(primaryHits)
+        addAll(secondaryHits)
+        addAll(nsHits)
+      }
+  }
 }

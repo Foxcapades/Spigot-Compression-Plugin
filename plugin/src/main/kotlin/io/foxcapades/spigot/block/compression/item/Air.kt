@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
 
-object Air: ItemStack(AIR, 0) {
+internal object Air : ItemStack(AIR, 0) {
   override fun setType(type: Material) = throw UnsupportedOperationException()
 
   override fun setAmount(amount: Int) = throw UnsupportedOperationException()

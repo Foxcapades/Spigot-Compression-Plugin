@@ -1,34 +1,35 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package io.foxcapades.spigot.block.compression
 
 import io.foxcapades.spigot.block.compression.command.CompressExecutor
 import io.foxcapades.spigot.block.compression.command.GiveExecutor
 import io.foxcapades.spigot.block.compression.command.ReloadExecutor
-import io.foxcapades.spigot.block.compression.compressible.Compressibles
+import io.foxcapades.spigot.block.compression.compress.Compressibles
 import io.foxcapades.spigot.block.compression.event.EventDispatch
-import io.foxcapades.spigot.block.compression.files.FileManager
-import org.bukkit.plugin.Plugin
+import io.foxcapades.spigot.block.compression.config.ListFiles
+import io.foxcapades.spigot.block.compression.config.PluginConfig
+import org.bukkit.NamespacedKey
+import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
+
+lateinit var Plugin: BlockCompressionPlugin
+  private set
+
+inline val Server: Server
+  get() = Plugin.server
 
 class BlockCompressionPlugin : JavaPlugin() {
-
-  internal companion object {
-    var instance: Plugin? = null
-      private set
-  }
-
   init {
-    instance = this
+    Plugin = this
   }
 
   override fun onLoad() {
-    FileManager.createLocalConfigsIfNeeded()
+    ListFiles.createLocalConfigsIfNeeded()
   }
 
   override fun onEnable() {
-    Config.reload()
     Compressibles.reload()
+    PluginConfig.reload()
 
     // Register compress/zip command handler.
     getCommand("compress")!!.setExecutor(CompressExecutor)
@@ -40,5 +41,10 @@ class BlockCompressionPlugin : JavaPlugin() {
 
     server.pluginManager.registerEvents(EventDispatch, this)
   }
-}
 
+  @Suppress("NOTHING_TO_INLINE")
+  internal inline fun newKey(key: String) = NamespacedKey(this, key)
+
+  @Suppress("NOTHING_TO_INLINE")
+  internal inline fun file(path: String) = File(dataFolder, path)
+}

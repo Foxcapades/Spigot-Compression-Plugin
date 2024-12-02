@@ -1,7 +1,7 @@
 package io.foxcapades.spigot.block.compression.event
 
 import io.foxcapades.spigot.block.compression.item.Air
-import io.foxcapades.spigot.block.compression.wrap.CraftInventory
+import io.foxcapades.spigot.block.compression.inv.CraftInventory
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
@@ -61,6 +61,7 @@ internal class BCInvClickEvent(private val raw: InventoryClickEvent) {
     get() = raw.click
 
   inline fun cancel() { raw.isCancelled = true }
+
   inline fun uncancel() { raw.isCancelled = false }
 
   inline fun ifTopInvIsNotCompressedItemSafe(action: BCInvClickEvent.(CraftInventory) -> Unit) {

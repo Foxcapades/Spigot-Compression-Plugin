@@ -1,12 +1,12 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import extra.plugin.lang.BuildLanguageFiles
 
 plugins {
   kotlin("jvm") version "2.0.21"
   id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-val releaseDir = mkdir(project.layout.buildDirectory.dir("release"))
-val libsDir = mkdir(project.layout.buildDirectory.dir("libs"))
+val releaseDir = mkdir(layout.buildDirectory.dir("release"))
+val libsDir = mkdir(layout.buildDirectory.dir("libs"))
 
 val shadowJarFile = libsDir.resolve("shadow.jar")
 val compressedJarFile = libsDir.resolve("compressed.jar")
@@ -23,7 +23,7 @@ dependencies {
 
 kotlin {
   compilerOptions {
-    jvmTarget.set(JvmTarget.JVM_17)
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
   }
 }
 
@@ -35,6 +35,8 @@ java {
 tasks.test {
   useJUnitPlatform()
 }
+
+tasks.register<BuildLanguageFiles>("build-language-files")
 
 val pushVersion = tasks.register("update-versions") {
   doLast {
@@ -78,5 +80,3 @@ tasks.register("release") {
 
   doLast { compressedJarFile.copyTo(target = releaseFile, overwrite = true) }
 }
-
-

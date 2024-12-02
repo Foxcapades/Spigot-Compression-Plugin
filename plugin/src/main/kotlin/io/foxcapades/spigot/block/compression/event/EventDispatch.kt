@@ -1,39 +1,35 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package io.foxcapades.spigot.block.compression.event
 
-import io.foxcapades.spigot.block.compression.consts.CompressorTitle
-import io.foxcapades.spigot.block.compression.event.handler.world.BlockPlaceHandler
-import io.foxcapades.spigot.block.compression.event.handler.world.InteractHandler
+import io.foxcapades.spigot.block.compression.event.handler.inventory.handleClick
+import io.foxcapades.spigot.block.compression.event.handler.inventory.handleCustom
+import io.foxcapades.spigot.block.compression.event.handler.inventory.handleStandard
+import io.foxcapades.spigot.block.compression.event.handler.world.handle
+import io.foxcapades.spigot.block.compression.ext.isCompressionTool
 import org.bukkit.Material.AIR
 import org.bukkit.event.*
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.inventory.*
 import org.bukkit.event.inventory.InventoryType.*
-import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerRecipeDiscoverEvent
 import org.bukkit.inventory.ItemStack
 
-object EventDispatch : Listener {
+internal object EventDispatch : Listener {
 
   @EventHandler
   fun InventoryClickEvent.onInventoryClick() = handleClick()
 
   @EventHandler
-  fun InventoryDragEvent.onInventoryDrag() {
-    if (view.title == CompressorTitle)
-      handleCustomDrag()
-    else
-      handleDragEvent(this)
-  }
+  fun InventoryDragEvent.onInventoryDrag() = if (view.isCompressionTool()) handleCustom() else handleStandard()
+
+  fun PlayerRecipeDiscoverEvent
 
   @EventHandler
   fun InventoryCloseEvent.onInventoryClose() {
-
     if (view.topInventory.type != WORKBENCH) {
       return
     }
 
-    if (view.title != CompressorTitle) {
+    if (view.isCompressionTool()) {
       return
     }
 
@@ -66,10 +62,5 @@ object EventDispatch : Listener {
   }
 
   @EventHandler
-  fun onBlockPlace(event: BlockPlaceEvent) =
-    BlockPlaceHandler.handle(BCBlockPlaceEvent(event))
-
-  @EventHandler
-  fun onPlayerInteract(event: PlayerInteractEvent) =
-    InteractHandler.handle(BCPlayerInteractEvent(event))
+  fun BlockPlaceEvent.onBlockPlace() = handle()
 }

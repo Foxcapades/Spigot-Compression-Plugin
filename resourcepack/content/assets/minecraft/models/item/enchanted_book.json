@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/enchanted_book"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 666
+      },
+      "model": "block_compression:item/zip_clamp"
+    }
+  ]
+}
