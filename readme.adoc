@@ -3,8 +3,8 @@
 
 **FOR THE HOARD!**
 
-A small plugin for SpigotMC that allows players to "compress" and "decompress"
-stacks of items or blocks for easier storage or transport of mass quantities.
+A SpigotMC plugin that allows players to compress and decompress stacks of items
+or blocks for easier storage or transportation of mass quantities.
 
 ++++
 <p align="center">
@@ -13,9 +13,9 @@ stacks of items or blocks for easier storage or transport of mass quantities.
 </p>
 ++++
 
-9 of any of the configured allowable items/blocks may be compressed into a
-single item/block.  This process may be repeated to compress a stack up to 9
-times to store a maximum of 24,794,911,296 items in a full (64) stack of fully
+9 of a single type of the configured allowable items/blocks may be compressed
+into a single item/block.  This process may be repeated to compress a stack up
+to 9 times to store a maximum of 24,794,911,296 items in a full (64) stack of
 compressed items.
 
 ++++
@@ -29,14 +29,6 @@ https://imgur.com/a/aedDwCR[Video/Screenshots (Imgur)]
 
 
 == Commands
-
-`/compress`::
-Command to open the Compression Workbench user interface. +
-+
-*Requires Permission*: `block-compression.gui`
-
-`/zip`::
-  Alias of `/compress`.
 
 `/bcgive`::
 Usage: `/bcgive <player> <item-id> <level(0-9)> <qty>`
@@ -56,61 +48,11 @@ items/blocks list files from disk without having to restart the server.
 
 == Permissions
 
-`block-compression.gui`::
-Grants access to the `/compress` and `/zip` commands as well as accessing the
-compression workbench via block interaction.
-
-`block-compression.gui.command`::
-Grants access to the `/compress` and `/zip` commands.
-
-`block-compression.gui.block`::
-Grants access to accessing the compression workbench via block interaction.
+`block-compression.tool`::
+Enables the ability to craft and/or use the block compression tool item.
 
 `block-compression.give`::
 Grants access to the `/bcgive` command.
 
 `block-compression.reload`::
 Grants access to the `/bcreload` command.
-
-
-== Configuration
-
-Block interaction to open the compression workbench can be configured with the
-plugin's `config.yml` file:
-
-.plugin.yml
-[source, yaml]
-----
-# Configures whether/how players can open the compression workbench by
-# interacting with a block, while optionally holding a "key" item to enable the
-# interaction.
-#
-# For example, if set to `target: minecraft:fletching_table` and
-# `holding: minecraft:diamond` then players with the correct permissions will be
-# able to open the crafting workbench by right clicking a diamond against a
-# fletching table.
-open-on-interact:
-  # Whether opening the crafting workbench by interacting with a block is
-  # enabled.
-  #
-  # Values: true|false
-  enabled: true
-  # ID of the target block that must be interacted with (right clicked on) to
-  # open the crafting workbench.
-  #
-  # Values: <any valid block id>
-  target: minecraft:fletching_table
-  # ID of the item that must be held by the player when interacting with
-  # (right clicking) the target block.
-  #
-  # To disable an item requirement, set to `minecraft:air`.
-  #
-  # Values: <any valid item id>
-  holding: minecraft:diamond
-----
-
-Additionally the plugin reads what blocks are allowed to be (de)compressed from 2 files:
-https://github.com/Foxcapades/Spigot-Compression-Plugin/blob/main/src/main/resources/compressible-items.txt[`compressible-items.txt`]
-and https://github.com/Foxcapades/Spigot-Compression-Plugin/blob/main/src/main/resources/compressible-blocks.txt[`compressible-blocks.txt`].
-
-These files will be created in the plugin's config directory on first load.

@@ -1,0 +1,34 @@
+# Plugin version, used internally to determine if the config needs to be
+# updated.
+version: 2.0.0
+
+# Sets whether trace/debug logging should be enabled.
+trace-logging: false
+
+# Defines recipes for the block compression plugin.
+zip-tool:
+  texture: 6e78c297c065e5a7e42fbe4bfeef81797e2bab95cce3278640d3df29e18d14dd
+  recipe:
+    # Inputs needed for crafting the item.
+    #
+    # Each item must have a 1-letter key which is used in the 'layout' value to
+    # represent the ingredient (or empty slot) in the recipe.
+    #
+    # Empty slots may be represented with a value that is either a YAML null
+    # or 'minecraft:air'.
+    items:
+      I: minecraft:iron_ingot
+      G: minecraft:gold_ingot
+      R: minecraft:redstone_block
+
+    # Layout of the items in the crafting grid using the identifier letters
+    # defined in the 'items' object above.
+    #
+    # This value must contain exactly 9 non-space characters that each
+    # correspond to a key in the 'items' block above.
+    #
+    # Space characters and newlines are ignored.
+    layout: >-
+      GIG
+      IRI
+      GIG
