@@ -6,4 +6,3 @@ internal class ConfigValues {
   var locale: String? = null
   var zipTool: ZipToolConfigValues? = null
 }
-

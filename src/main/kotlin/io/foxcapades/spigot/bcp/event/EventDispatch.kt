@@ -14,9 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 
 internal object EventDispatch : Listener {
   @EventHandler
-  fun onPlayerJoin(event: PlayerJoinEvent) = event.handle()
-
-  @EventHandler
   fun onBlockPlace(event: BlockPlaceEvent) = event.handle()
 
   @EventHandler
@@ -30,4 +27,7 @@ internal object EventDispatch : Listener {
 
   @EventHandler
   fun onPlayerInteract(event: PlayerInteractEvent) = event.handle()
+
+  @EventHandler
+  fun onPlayerJoin(event: PlayerJoinEvent) = event.handle()
 }

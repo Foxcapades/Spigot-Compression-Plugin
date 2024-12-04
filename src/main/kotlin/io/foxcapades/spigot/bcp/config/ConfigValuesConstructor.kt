@@ -1,10 +1,8 @@
 package io.foxcapades.spigot.bcp.config
 
-import io.foxcapades.spigot.bcp.util.YamlProperty
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.TypeDescription
 import org.yaml.snakeyaml.constructor.Constructor
-import kotlin.reflect.jvm.javaMethod
 
 private const val KeyTraceEnabled = "trace-logging"
 private const val KeyZipTool = "zip-tool"
@@ -12,18 +10,8 @@ private const val KeyZipTool = "zip-tool"
 internal class ConfigValuesConstructor : Constructor(
   object : TypeDescription(ConfigValues::class.java) {
     init {
-      substituteProperty(
-        KeyTraceEnabled,
-        Boolean::class.java,
-        ConfigValues::traceEnabled.getter.javaMethod!!.name,
-        ConfigValues::traceEnabled.setter.javaMethod!!.name,
-      )
-      substituteProperty(
-        KeyZipTool,
-        ZipToolConfigValues::class.java,
-        ConfigValues::zipTool.getter.javaMethod!!.name,
-        ConfigValues::zipTool.setter.javaMethod!!.name,
-      )
+      substituteProperty(KeyTraceEnabled, Boolean::class.java, "getTraceEnabled", "setTraceEnabled")
+      substituteProperty(KeyZipTool, ZipToolConfigValues::class.java, "getZipTool", "setZipTool")
     }
 
     override fun getProperty(name: String) =
