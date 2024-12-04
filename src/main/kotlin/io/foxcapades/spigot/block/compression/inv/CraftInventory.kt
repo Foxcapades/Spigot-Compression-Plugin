@@ -4,7 +4,7 @@ import io.foxcapades.spigot.block.compression.compress.compress
 import io.foxcapades.spigot.block.compression.compress.compressionLevel
 import io.foxcapades.spigot.block.compression.compress.ifCompressible
 import io.foxcapades.spigot.block.compression.ext.*
-import io.foxcapades.spigot.block.compression.item.*
+import io.foxcapades.spigot.block.compression.item.Air
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
@@ -31,15 +31,12 @@ internal class CraftInventory(private val raw: Inventory) {
    * result present.
    */
   fun popResult(): ItemStack {
-
     val out = raw.getItem(0) ?: throw IllegalStateException("Attempted to pop a non-existent result.")
 
     if (!materialized)
       reduceAllBy(1)
 
     raw.clear(0)
-
-
     calculateResult()
 
     return out
@@ -436,7 +433,6 @@ internal class CraftInventory(private val raw: Inventory) {
    */
   fun calculateResult() {
     ifSingleStack {
-
       val lvl = it.compressionLevel()
 
       if (lvl.hasPrevious)

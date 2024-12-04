@@ -3,7 +3,9 @@ package io.foxcapades.spigot.block.compression.event.handler.inventory
 import io.foxcapades.spigot.block.compression.Plugin
 import io.foxcapades.spigot.block.compression.Server
 import io.foxcapades.spigot.block.compression.compress.isCompressed
+import io.foxcapades.spigot.block.compression.ext.logName
 import io.foxcapades.spigot.block.compression.inv.CraftInventory
+import io.foxcapades.spigot.block.compression.log.Logger
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType.*
 
@@ -23,13 +25,14 @@ internal fun InventoryDragEvent.handleStandard() {
     else        -> { /* continue */ }
   }
 
-  if (newItems.values.first().isCompressed())
+  if (!newItems.values.first().isCompressed)
     return
 
   val min = view.topInventory.size
 
   for (i in rawSlots) {
     if (i < min) {
+      Logger.trace { "cancelling drag event for item %s".format(newItems.values.first().logName) }
       isCancelled = true
       return
     }

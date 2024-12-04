@@ -2,10 +2,10 @@ package io.foxcapades.spigot.block.compression
 
 import io.foxcapades.spigot.block.compression.command.GiveExecutor
 import io.foxcapades.spigot.block.compression.command.ReloadExecutor
-import io.foxcapades.spigot.block.compression.compress.Compressibles
-import io.foxcapades.spigot.block.compression.event.EventDispatch
 import io.foxcapades.spigot.block.compression.config.ListFiles
-import io.foxcapades.spigot.block.compression.config.PluginConfig
+import io.foxcapades.spigot.block.compression.event.EventDispatch
+import io.foxcapades.spigot.block.compression.i18n.I18N
+import io.foxcapades.spigot.block.compression.item.ZipTool
 import org.bukkit.NamespacedKey
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
@@ -27,8 +27,12 @@ class BlockCompressionPlugin : JavaPlugin() {
   }
 
   override fun onEnable() {
-    Compressibles.reload()
-    PluginConfig.reload()
+    // import for side effects
+    I18N
+    ZipTool
+
+    // load config
+    ReloadExecutor.performReload()
 
     // Register compress/zip command handler.
     getCommand("bcreload")!!.setExecutor(ReloadExecutor)

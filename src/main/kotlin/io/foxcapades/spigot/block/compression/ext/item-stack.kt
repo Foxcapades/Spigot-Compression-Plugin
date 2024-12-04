@@ -8,6 +8,9 @@ import org.bukkit.inventory.ItemStack
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
+internal inline val ItemStack.logName
+  get() = itemMeta?.takeIf { it.hasDisplayName() }?.displayName ?: type.name
+
 @OptIn(ExperimentalContracts::class)
 internal inline fun ItemStack?.isEmpty(): Boolean {
   contract {

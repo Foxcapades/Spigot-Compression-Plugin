@@ -8,7 +8,7 @@ import org.bukkit.inventory.CraftingInventory
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun Player.openCompressionGUI() =
-  openInventory(Server.createInventory(this, WORKBENCH, I18N.workbenchName())) as CraftingInventory
+  openInventory(Server.createInventory(this, WORKBENCH, I18N.workbenchName()))
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun Player.hasAnyPerm(vararg perms: String) =

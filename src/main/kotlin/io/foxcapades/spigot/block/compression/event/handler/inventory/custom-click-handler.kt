@@ -1,8 +1,8 @@
 package io.foxcapades.spigot.block.compression.event.handler.inventory
 
 import io.foxcapades.spigot.block.compression.event.BCInvClickEvent
-import io.foxcapades.spigot.block.compression.ext.ifEmpty
-import io.foxcapades.spigot.block.compression.ext.ifNotEmpty
+import io.foxcapades.spigot.block.compression.ext.*
+import io.foxcapades.spigot.block.compression.log.Logger
 import org.bukkit.event.inventory.InventoryType.SlotType.CRAFTING
 import org.bukkit.event.inventory.InventoryType.SlotType.RESULT
 
@@ -86,8 +86,10 @@ private fun BCInvClickEvent.topPutRight() {
 // Left Click
 
 private fun BCInvClickEvent.topClickLeft() {
-  cursor.ifEmpty { return topTakeLeft() }
-  topPutLeft()
+  if (cursor.isEmpty())
+    topTakeLeft()
+  else
+    topPutLeft()
 }
 
 private fun BCInvClickEvent.topTakeLeft() =
@@ -98,10 +100,16 @@ private fun BCInvClickEvent.topTakeLeft() =
   }
 
 private fun BCInvClickEvent.topTakeResultLeft() =
-  inventorySlot.ifNotEmpty { cursor = top.popResult() }
+  inventorySlot.ifNotEmpty {
+    cursor = top.popResult()
+    Logger.trace { "popped result %s".format(cursor.logName) }
+  }
 
 private fun BCInvClickEvent.topTakeIngredientLeft() =
-  inventorySlot.ifNotEmpty { cursor = top.take(slotIndex) }
+  inventorySlot.ifNotEmpty {
+    cursor = top.take(slotIndex)
+    Logger.trace { "removed ingredient %s".format(cursor.logName) }
+  }
 
 private fun BCInvClickEvent.topPutLeft() =
   when (slotType) {
@@ -111,6 +119,7 @@ private fun BCInvClickEvent.topPutLeft() =
   }
 
 private fun BCInvClickEvent.topPutIngredient() {
+  Logger.trace { "attempting to put ingredient %s (%d)".format(cursor.logName, cursor.size) }
   cursor = top.putItem(slotIndex, cursor)
 }
 
@@ -130,4 +139,5 @@ private fun BCInvClickEvent.topMergeToCursor() {
 
   top.popResult()
   cursor.amount = newSize
+  Logger.trace { "merged result %s to cursor stack".format(cursor.logName) }
 }

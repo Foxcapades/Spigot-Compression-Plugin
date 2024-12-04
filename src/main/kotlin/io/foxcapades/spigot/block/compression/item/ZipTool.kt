@@ -2,10 +2,12 @@ package io.foxcapades.spigot.block.compression.item
 
 import io.foxcapades.spigot.block.compression.Plugin
 import io.foxcapades.spigot.block.compression.Server
-import io.foxcapades.spigot.block.compression.config.PluginConfig
-import io.foxcapades.spigot.block.compression.config.RecipeConfig
+import io.foxcapades.spigot.block.compression.config.Config
+import io.foxcapades.spigot.block.compression.config.RecipeConfigValues
 import io.foxcapades.spigot.block.compression.consts.Default
 import io.foxcapades.spigot.block.compression.i18n.I18N
+import io.foxcapades.spigot.block.compression.log.Logger
+import io.foxcapades.spigot.block.compression.util.Observer
 import io.foxcapades.spigot.block.compression.util.then
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -16,29 +18,71 @@ import org.bukkit.inventory.meta.SkullMeta
 import java.net.URI
 import java.util.UUID
 
-internal object ZipTool {
+internal object ZipTool : Observer() {
+  private const val DefaultTexture = "6e78c297c065e5a7e42fbe4bfeef81797e2bab95cce3278640d3df29e18d14dd"
+
   private const val TextureURL = "https://textures.minecraft.net/texture/"
 
-  private val ws = Regex("\\s+")
+  private var lastTexture = ""
 
-  private const val ModelData = 666
+  val type = Material.PLAYER_HEAD
 
-  fun create() = ItemStack(Material.PLAYER_HEAD).apply {
-    itemMeta = createMeta()
+  val key = Plugin.newKey("zip_tool")
+
+  val itemMeta
+    get() = instance.itemMeta as SkullMeta
+
+  lateinit var instance: ItemStack
+
+  init {
+    Config.Translation.observe(this)
+    Config.Items.CompressionTool.observe(this)
   }
 
-  @Suppress("NOTHING_TO_INLINE")
-  private inline fun ItemStack.createMeta() = (itemMeta as SkullMeta).apply {
-    setDisplayName(I18N.zipItemName())
-    Server.createPlayerProfile(UUID.randomUUID()).textures.skin = URI(TextureURL + PluginConfig.ZipToolTexture).toURL()
-    lore = listOf(I18N.zipItemLore())
-    setMaxStackSize(1)
+  inline val ItemStack.isZipTool
+    get() = type == ZipTool.type
+      && itemMeta?.let { it.hasDisplayName() && it.displayName == I18N.zipItemName() }
+      ?: false
+
+  override fun handleChange(change: UInt) {
+    instance = ItemStack(type, 1)
+    val meta = createMeta()
+
+    Config.Items.CompressionTool.texture
+      .let { it ?: DefaultTexture }
+      .also { texture ->
+        if (texture != lastTexture) {
+          meta.ownerProfile = (meta.ownerProfile ?: createProfile())
+            .apply {
+              textures.skin = URI(TextureURL).resolve(texture).toURL()
+              Logger.trace("using texture %s", textures.skin)
+            }
+          lastTexture = texture
+        }
+      }
+
+    meta.setDisplayName(I18N.zipItemName())
+    meta.lore = listOf(I18N.zipItemLore())
+
+    instance.itemMeta = meta
+
+    Logger.trace("new item data: %s", instance)
+
+    if (Server.getRecipe(key) != null)
+      Server.removeRecipe(key)
+
+    Config.Items.CompressionTool.recipe
+      ?.let { try {
+        parseRecipe(it)
+      } catch (e: Throwable) {
+        Logger.error("failed to parse compression tool recipe: %s", e.message)
+        null
+      } }
+      ?.also(Server::addRecipe)
   }
 
-  inline val ItemStack.isZipTool get() = type == Material.ENCHANTED_BOOK && itemMeta?.customModelData == ModelData
-
-  fun parseRecipe(config: RecipeConfig): Recipe {
-    return ShapedRecipe(Plugin.newKey("zip_tool"), create()).apply {
+  private fun parseRecipe(config: RecipeConfigValues): Recipe {
+    return ShapedRecipe(key, instance).apply {
       val lines = arrayOf(
         ByteArray(3) { 32 },
         ByteArray(3) { 32 },
@@ -73,24 +117,17 @@ internal object ZipTool {
     }
   }
 
-  @JvmInline
-  private value class RecipeLayout(val bytes: ByteArray) {
-    inline val indices get() = bytes.indices
+  @Suppress("NOTHING_TO_INLINE")
+  private inline fun makeTextureString(textureID: String) =
+    """{"textures":{"SKIN":{"url":"$TextureURL/$textureID"}}}"""
 
-    init {
-      if (bytes.size != 9) {
-        throw IllegalArgumentException("recipe layouts must contain exactly 9 letters or numbers")
-      }
-    }
+  private fun createProfile() =
+    Server.createPlayerProfile(UUID.fromString("c48188b9-6f87-4591-974e-9bc9dc2d40d7"), "zip_tool")
 
-    constructor(configString: String) : this(ws.replace(configString, "").toByteArray())
-
-    operator fun iterator() = iterator {
-      for (b in bytes)
-        yield(b)
-    }
-
-    @Suppress("NOTHING_TO_INLINE")
-    inline operator fun get(index: Int) = bytes[index]
+  private fun createMeta() = itemMeta.apply {
+    setMaxStackSize(1)
+    setEnchantmentGlintOverride(true)
   }
 }
+
+

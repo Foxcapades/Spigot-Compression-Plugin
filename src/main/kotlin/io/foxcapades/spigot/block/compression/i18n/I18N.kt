@@ -1,49 +1,69 @@
 package io.foxcapades.spigot.block.compression.i18n
 
+import io.foxcapades.spigot.block.compression.Plugin
 import io.foxcapades.spigot.block.compression.compress.CompressionLevel
+import io.foxcapades.spigot.block.compression.config.Config
 import io.foxcapades.spigot.block.compression.log.Logger
+import io.foxcapades.spigot.block.compression.util.Observable
 import org.bukkit.Material
-import java.util.Locale
+import java.io.InputStream
 import java.util.Properties
 
-internal object I18N {
+internal object I18N : Observable() {
   private const val ItemsFileName = "items.properties"
   private const val BlocksFileName = "blocks.properties"
   private const val StacksFileName = "stacks.properties"
   private const val PluginFileName = "plugin.properties"
 
-  private const val LocalePath = "/locales"
+  private const val DefaultLocale = "en_us"
 
-  private val DefaultLocale = Locale.US
+  private inline val LocalePath
+    get() = "locales"
 
-  private val bundles: Map<Locale, Bundle>
+  private inline val LocaleResourcePath
+    get() = "/$LocalePath"
+
+  private var bundles: Map<String, Bundle> = emptyMap()
+
+  private var currentLocale = ""
 
   init {
-    Logger.info("Loading locales.")
-
-    if (Locale.getDefault() == Locale.US) {
-      bundles = HashMap(1)
-      bundles[Locale.US] = loadDefaultBundle()
-    } else {
-      bundles = HashMap(2)
-      bundles[Locale.US] = loadDefaultBundle()
-        .also { bundles[Locale.getDefault()] = tryLoadBundle(Locale.getDefault(), it) }
+    Config.Translation.observe {
+      if ((Config.Translation.locale ?: DefaultLocale) != currentLocale) {
+        reload()
+        commit(it)
+      }
     }
   }
 
-  fun workbenchName(locale: Locale = Locale.getDefault()): String =
+  private fun reload() {
+    if (Config.Translation.locale == null || Config.Translation.locale == DefaultLocale) {
+      Logger.info("Loading locale %s", DefaultLocale)
+      bundles = HashMap<String, Bundle>(1).also { it[DefaultLocale] = loadDefaultBundle() }
+    } else {
+      Logger.info("Loading locales %s and %s", Config.Translation.locale, DefaultLocale)
+      bundles = HashMap<String, Bundle>(2).also {
+        with(loadDefaultBundle()) {
+          it[DefaultLocale] = this
+          it[Config.Translation.locale!!] = tryLoadBundle(Config.Translation.locale!!, this)
+        }
+      }
+    }
+  }
+
+  fun workbenchName(locale: String = currentLocale): String =
     bundleFor(locale).plugin["workbench.name"]
 
-  fun zipItemName(locale: Locale = Locale.getDefault()): String =
+  fun zipItemName(locale: String = currentLocale): String =
     bundleFor(locale).plugin["ziptool.name"]
 
-  fun zipItemLore(locale: Locale = Locale.getDefault()): String =
+  fun zipItemLore(locale: String = currentLocale): String =
     bundleFor(locale).plugin["ziptool.lore"]
 
-  fun itemName(mat: Material, locale: Locale = Locale.getDefault()): String =
+  fun itemName(mat: Material, locale: String = currentLocale): String =
     bundleFor(locale).items[mat.toKey()]
 
-  fun blockName(mat: Material, locale: Locale = Locale.getDefault()): String =
+  fun blockName(mat: Material, locale: String = currentLocale): String =
     bundleFor(locale).blocks[mat.toKey()]
 
   /**
@@ -56,7 +76,7 @@ internal object I18N {
    * @return The raw template text for the lore line for the given
    * `CompressionLevel`.
    */
-  fun loreTemplateFor(lvl: CompressionLevel, locale: Locale = Locale.getDefault()): String =
+  fun loreTemplateFor(lvl: CompressionLevel, locale: String = currentLocale): String =
     bundleFor(locale).stacks["stack.$lvl.lore"]
 
   /**
@@ -69,7 +89,7 @@ internal object I18N {
    * @return The raw template text for the display name for the given
    * `CompressionLevel`
    */
-  fun nameTemplateFor(lvl: CompressionLevel, locale: Locale = Locale.getDefault()): String =
+  fun nameTemplateFor(lvl: CompressionLevel, locale: String = currentLocale): String =
     bundleFor(locale).stacks["stack.$lvl.name"]
 
   /**
@@ -85,7 +105,7 @@ internal object I18N {
    * block/item name.
    */
   @Suppress("NOTHING_TO_INLINE")
-  inline fun fillLoreFor(lvl: CompressionLevel, name: String, locale: Locale = Locale.getDefault()) =
+  inline fun fillLoreFor(lvl: CompressionLevel, name: String, locale: String = currentLocale) =
     loreTemplateFor(lvl, locale).replace("\${name}", name).replace("\${size}", lvl.size.toString())
 
   /**
@@ -101,7 +121,7 @@ internal object I18N {
    * block/item name.
    */
   @Suppress("NOTHING_TO_INLINE")
-  inline fun fillNameFor(lvl: CompressionLevel, name: String, locale: Locale = Locale.getDefault()) =
+  inline fun fillNameFor(lvl: CompressionLevel, name: String, locale: String = currentLocale) =
     nameTemplateFor(lvl, locale).replace("\${name}", name).replace("\${size}", lvl.size.toString())
 
   private fun localeExists(localeString: String): Boolean {
@@ -111,46 +131,44 @@ internal object I18N {
       || javaClass.getResource(localeFilePath(localeString, StacksFileName)) != null
   }
 
-  private fun localePathVariants(locale: Locale) = sequence {
-    val variant  = locale.variant.lowercase()
-    val country  = locale.country.lowercase()
-    val language = locale.language.lowercase()
-
-    yield(language)
-
-    if (country.isNotBlank()) {
-      yield("${language}_${country}")
-
-      if (variant.isNotBlank()) {
-        yield("${language}_${country}_${variant}")
-      }
-    }
-  }
-
-  private fun tryLoadBundle(locale: Locale, fallback: Bundle): Bundle {
+  private fun tryLoadBundle(locale: String, fallback: Bundle): Bundle {
     var (blocks, items, plugin, stacks) = fallback
 
-    for (variant in localePathVariants(locale)) {
-      tryLoadProperties(variant, BlocksFileName)?.let { blocks = LocalizationTreeNode(it, blocks) }
-      tryLoadProperties(variant, ItemsFileName)?.let { items = LocalizationTreeNode(it, items) }
-      tryLoadProperties(variant, PluginFileName)?.let { plugin = LocalizationTreeNode(it, plugin) }
-      tryLoadProperties(variant, StacksFileName)?.let { stacks = LocalizationTreeNode(it, stacks) }
-    }
+    tryLoadProperties(locale, BlocksFileName)?.let { blocks = LocalizationTreeNode(it, blocks) }
+      ?: Logger.info("falling back to %s locale instead of %s for %s", DefaultLocale, locale, BlocksFileName)
+    tryLoadProperties(locale, ItemsFileName)?.let { items = LocalizationTreeNode(it, items) }
+      ?: Logger.info("falling back to %s locale instead of %s for %s", DefaultLocale, locale, ItemsFileName)
+    tryLoadProperties(locale, PluginFileName)?.let { plugin = LocalizationTreeNode(it, plugin) }
+      ?: Logger.info("falling back to %s locale instead of %s for %s", DefaultLocale, locale, PluginFileName)
+    tryLoadProperties(locale, StacksFileName)?.let { stacks = LocalizationTreeNode(it, stacks) }
+      ?: Logger.info("falling back to %s locale instead of %s for %s", DefaultLocale, locale, StacksFileName)
 
     return Bundle(blocks, items, plugin, stacks)
   }
 
   private fun loadDefaultBundle() =
     Bundle(
-      blocks = LocalizationTreeNode(tryLoadProperties("en_us", BlocksFileName)!!),
-      items  = LocalizationTreeNode(tryLoadProperties("en_us", ItemsFileName)!!),
-      plugin = LocalizationTreeNode(tryLoadProperties("en_us", PluginFileName)!!),
-      stacks = LocalizationTreeNode(tryLoadProperties("en_us", StacksFileName)!!),
+      blocks = LocalizationTreeNode(requireProperties(DefaultLocale, BlocksFileName)),
+      items  = LocalizationTreeNode(requireProperties(DefaultLocale, ItemsFileName)),
+      plugin = LocalizationTreeNode(requireProperties(DefaultLocale, PluginFileName)),
+      stacks = LocalizationTreeNode(requireProperties(DefaultLocale, StacksFileName)),
     )
 
-  private fun tryLoadProperties(localeString: String, file: String) =
-    javaClass.getResourceAsStream("$LocalePath/$localeString/$file")
-      ?.let { Properties().apply { load(it) } }
+  private fun tryLoadProperties(locale: String, file: String) =
+    getLocaleFileStream(locale, file)
+      ?.use { Properties().apply { load(it) } }
+
+  @Suppress("NOTHING_TO_INLINE", "SameParameterValue")
+  private inline fun requireProperties(locale: String, file: String) =
+    tryLoadProperties(locale, file)
+      ?: throw IllegalStateException("missing required localization file $file for locale $locale")
+
+  @Suppress("NOTHING_TO_INLINE")
+  private inline fun getLocaleFileStream(locale: String, file: String): InputStream? =
+    Plugin.file("$LocalePath/$locale/$file")
+      .takeIf { it.exists() }
+      ?.inputStream()
+      ?: javaClass.getResourceAsStream("$LocaleResourcePath/$locale/$file")
 
   @Suppress("NOTHING_TO_INLINE")
   private inline fun localeFilePath(locale: String, file: String) = "$LocalePath/$locale/$file"
@@ -159,7 +177,7 @@ internal object I18N {
   private inline fun Material.toKey() = if (key.namespace == "minecraft") key.key else "${key.namespace}.${key.key}"
 
   @Suppress("NOTHING_TO_INLINE")
-  private inline fun bundleFor(locale: Locale) = bundles[locale] ?: bundles[DefaultLocale]!!
+  private inline fun bundleFor(locale: String) = bundles[locale] ?: bundles[DefaultLocale]!!
 }
 
 private data class Bundle(

@@ -1,5 +1,6 @@
 import extra.plugin.lang.BuildLanguageFiles
 import extra.plugin.mojang.BuildPlayerHeadMeta
+import extra.plugin.mojang.GetPlayerUUID
 
 plugins {
   kotlin("jvm") version "2.0.21"
@@ -10,10 +11,12 @@ repositories {
   mavenCentral()
   maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
   maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+  maven { url = uri("https://libraries.minecraft.net/")}
 }
 
 dependencies {
   compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
+  compileOnly("com.mojang:authlib:6.0.54")
   implementation(kotlin("reflect"))
 }
 
@@ -87,3 +90,4 @@ tasks.register("release") {
 }
 
 tasks.register<BuildPlayerHeadMeta>("buildPlayerHeadMeta")
+tasks.register<GetPlayerUUID>("getPlayerUUID")

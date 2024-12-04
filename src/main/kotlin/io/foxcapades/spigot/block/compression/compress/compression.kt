@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 
-internal inline fun ItemStack.isCompressed() = compressionLevel() != CompressionLevel.Zero
+internal inline val ItemStack.isCompressed get() = compressionLevel() != CompressionLevel.Zero
 
 internal inline fun <T> ItemStack.ifCompressed(fn: ItemStack.(CompressionLevel) -> T) =
   compressionLevel().takeUnless { it == CompressionLevel.Zero }?.also { fn(it) }

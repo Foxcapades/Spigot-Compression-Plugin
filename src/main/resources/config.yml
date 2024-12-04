@@ -5,6 +5,8 @@ version: 2.0.0
 # Sets whether trace/debug logging should be enabled.
 trace-logging: false
 
+locale: en_us
+
 # Defines recipes for the block compression plugin.
 zip-tool:
   texture: 6e78c297c065e5a7e42fbe4bfeef81797e2bab95cce3278640d3df29e18d14dd
