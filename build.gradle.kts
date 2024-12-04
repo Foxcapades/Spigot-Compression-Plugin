@@ -11,12 +11,10 @@ repositories {
   mavenCentral()
   maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
   maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-  maven { url = uri("https://libraries.minecraft.net/")}
 }
 
 dependencies {
   compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
-  compileOnly("com.mojang:authlib:6.0.54")
   implementation(kotlin("reflect"))
 }
 
