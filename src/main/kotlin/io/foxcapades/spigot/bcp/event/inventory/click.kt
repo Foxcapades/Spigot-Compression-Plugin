@@ -1,7 +1,5 @@
 package io.foxcapades.spigot.bcp.event.inventory
 
-import io.foxcapades.spigot.bcp.compress.ifCompressed
-import io.foxcapades.spigot.bcp.event.BCInvClickEvent
 import io.foxcapades.spigot.bcp.ext.*
 import io.foxcapades.spigot.bcp.ext.ifEmpty
 import io.foxcapades.spigot.bcp.ext.ifNotEmpty
@@ -9,6 +7,7 @@ import io.foxcapades.spigot.bcp.ext.isEmpty
 import io.foxcapades.spigot.bcp.ext.logName
 import io.foxcapades.spigot.bcp.i18n.I18N
 import io.foxcapades.spigot.bcp.Logger
+import io.foxcapades.spigot.bcp.compress.isCompressed
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.ClickType.*
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -17,7 +16,7 @@ import org.bukkit.event.inventory.InventoryType.SlotType.RESULT
 
 
 internal fun InventoryClickEvent.handle() =
-  BCInvClickEvent(this).run {
+  with(BCInvClickEvent(this)) {
     if (view.title == I18N.workbenchName())
       handleCustomClick(click)
     else
@@ -54,29 +53,24 @@ private fun BCInvClickEvent.handleStandardRightClick() =
 /**
  * Prevent placing compressed blocks in non-compression-table inventories.
  */
-private fun BCInvClickEvent.handleStandardItemPlace() =
-  ifUserClickedTopInv {
-    cursor.ifCompressed {
-      ifTopInvIsNotCompressedItemSafe {
-        Logger.trace("canceling top inventory click event for %s", cursor.type.name)
+private fun BCInvClickEvent.handleStandardItemPlace() {
+  if (userClickedTopInventory && cursor.isCompressed && !topInvIsCompressedItemSafe) {
+    Logger.trace("canceling top inventory click event for %s", cursor.type.name)
+    cancel()
+  }
+}
+
+private fun BCInvClickEvent.handleStandardShiftLeftClick() {
+  when {
+    inventorySlot.isNotEmpty() -> {
+      if (userClickedBottomInventory && inventorySlot.isCompressed && !topInvIsCompressedItemSafe) {
+        Logger.trace("canceling moving item %s to top inventory", inventorySlot.type.name)
         cancel()
       }
     }
-  }
 
-private fun BCInvClickEvent.handleStandardShiftLeftClick() {
-  inventorySlot.ifNotEmpty {
-    return ifUserClickedBottomInv {
-      inventorySlot.ifCompressed {
-        ifTopInvIsNotCompressedItemSafe {
-          Logger.trace("canceling moving item %s to top inventory", inventorySlot.type.name)
-          cancel()
-        }
-      }
-    }
+    cursor.isNotEmpty() -> handleStandardItemPlace()
   }
-
-  cursor.ifNotEmpty(::handleStandardItemPlace)
 }
 
 private fun BCInvClickEvent.handleStandardShiftRightClick() =
@@ -86,26 +80,31 @@ private fun BCInvClickEvent.handleStandardShiftRightClick() =
 
 // region Compression Workbench Click Handling
 
-private fun BCInvClickEvent.handleCustomLeftClick() =
-  ifUserClickedTopInv {
+private fun BCInvClickEvent.handleCustomLeftClick() {
+  if (userClickedTopInventory) {
     cancel()
     topClickLeft()
   }
+}
 
-private fun BCInvClickEvent.handleCustomRightClick() =
-  ifUserClickedTopInv {
+private fun BCInvClickEvent.handleCustomRightClick() {
+  if (userClickedTopInventory) {
     cancel()
     topClickRight()
   }
+}
 
 private fun BCInvClickEvent.handleCustomShiftLeftClick() {
   cancel()
-  ifUserClickedTopInv { return topClickShiftLeft() }
-  ifUserClickedBottomInv { return bottomClickShiftLeft() }
+
+  when {
+    userClickedTopInventory    -> topClickShiftLeft()
+    userClickedBottomInventory -> bottomClickShiftLeft()
+  }
 }
 
 private fun BCInvClickEvent.handleCustomShiftRightClick() {
-  ifUserClickedBottomInv {
+  if (userClickedBottomInventory) {
     cancel()
 
     inventorySlot.ifNotEmpty {

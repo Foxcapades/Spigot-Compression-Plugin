@@ -7,13 +7,11 @@ import org.bukkit.event.inventory.InventoryType.WORKBENCH
 import org.bukkit.inventory.ItemStack
 
 internal fun InventoryCloseEvent.handle() {
-  if (view.topInventory.type != WORKBENCH) {
+  if (view.topInventory.type != WORKBENCH)
     return
-  }
 
-  if (view.isCompressionTool()) {
+  if (!view.isCompressionTool())
     return
-  }
 
   var count = 0
 
@@ -26,7 +24,6 @@ internal fun InventoryCloseEvent.handle() {
 
   if (count == 0)
     return
-
 
   val tmp = arrayOfNulls<ItemStack>(count)
 

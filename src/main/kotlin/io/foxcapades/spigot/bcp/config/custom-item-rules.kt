@@ -29,7 +29,7 @@ private fun <T> InputStream.processItemRules(fn: (Sequence<Pair<String, String>>
         else -> yield(line.substring(0, i) to line.substring(i+1))
       }
 
-      line = it.readLine().trim()
+      line = it.readLine()?.trim()
     }
   })
 }

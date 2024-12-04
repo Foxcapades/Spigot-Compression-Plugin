@@ -60,8 +60,8 @@ internal object Compressibles : Iterable<Pair<String, String>> {
 
     withDisallowedBlockRules { it.forEach { (ns, name) -> (mcBlocks[ns] as MutableSet?)?.apply {
       remove(name)
-      isEmpty()
-      mcBlocks.remove(ns)
+      if (isEmpty())
+        mcBlocks.remove(ns)
     } } }
 
     Logger.info("found %d compressible blocks", mcBlocks.values.sumOf { it.size })
@@ -76,8 +76,8 @@ internal object Compressibles : Iterable<Pair<String, String>> {
 
     withDisallowedItemRules { it.forEach { (ns, name) -> (mcItems[ns] as MutableSet?)?.apply {
       remove(name)
-      isEmpty()
-      mcItems.remove(ns)
+      if (isEmpty())
+        mcItems.remove(ns)
     } } }
 
     Logger.info("found %d compressible items", mcItems.values.sumOf { it.size })

@@ -22,8 +22,6 @@ internal object ZipTool : Observer() {
   private const val TextureURL     = "https://textures.minecraft.net/texture/"
   private const val DefaultTexture = "6e78c297c065e5a7e42fbe4bfeef81797e2bab95cce3278640d3df29e18d14dd"
 
-  private var lastTexture = ""
-
 
   val type = Material.PLAYER_HEAD
 
@@ -47,26 +45,7 @@ internal object ZipTool : Observer() {
       ?: false
 
   override fun handleChange(change: UInt) {
-    instance = ItemStack(type, 1)
-    val meta = createMeta()
-
-    Config.Items.CompressionTool.texture
-      .let { it ?: DefaultTexture }
-      .also { texture ->
-        if (texture != lastTexture) {
-          meta.ownerProfile = (meta.ownerProfile ?: createProfile())
-            .apply {
-              textures.skin = URI(TextureURL).resolve(texture).toURL()
-              Logger.trace("using texture %s", textures.skin)
-            }
-          lastTexture = texture
-        }
-      }
-
-    meta.setDisplayName(I18N.zipItemName())
-    meta.lore = listOf(I18N.zipItemLore())
-
-    instance.itemMeta = meta
+    instance = ItemStack(type, 1).apply { createMeta() }
 
     Logger.trace("new item data: %s", instance)
 
@@ -126,7 +105,20 @@ internal object ZipTool : Observer() {
   private fun createProfile() =
     Server.createPlayerProfile(UUID.fromString("c48188b9-6f87-4591-974e-9bc9dc2d40d7"), "zip_tool")
 
-  private fun createMeta() = itemMeta.apply { setMaxStackSize(1) }
+  private fun ItemStack.createMeta() {
+    itemMeta = (itemMeta as SkullMeta).apply {
+      setMaxStackSize(1)
+
+      ownerProfile = (ownerProfile ?: createProfile())
+        .apply {
+          textures.skin = URI(TextureURL).resolve(Config.Items.CompressionTool.texture ?: DefaultTexture).toURL()
+          Logger.trace("using texture %s", textures.skin)
+        }
+
+      setDisplayName(I18N.zipItemName())
+      lore = listOf(I18N.zipItemLore())
+    }
+  }
 }
 
 

@@ -1,7 +1,7 @@
 name: block-compression
 version: 2.0.0-SNAPSHOT
 author: Elizabeth Harper <foxcapades.io@gmail.com>
-main: io.foxcapades.spigot.block.compression.BlockCompressionPlugin
+main: io.foxcapades.spigot.bcp.BlockCompressionPlugin
 website: https://github.com/Foxcapades/Spigot-Compression-Plugin
 api-version: 1.20
 

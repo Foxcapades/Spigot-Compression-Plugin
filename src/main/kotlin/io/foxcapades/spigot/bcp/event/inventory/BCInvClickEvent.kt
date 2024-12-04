@@ -1,4 +1,4 @@
-package io.foxcapades.spigot.bcp.event
+package io.foxcapades.spigot.bcp.event.inventory
 
 import io.foxcapades.spigot.bcp.inv.CraftInventory
 import io.foxcapades.spigot.bcp.item.Air
@@ -51,41 +51,13 @@ internal class BCInvClickEvent(private val raw: InventoryClickEvent) {
       else        -> false
     }
 
-  inline val userClickedTopInv: Boolean
+  inline val userClickedTopInventory: Boolean
     get() = raw.clickedInventory === raw.view.topInventory
 
-  inline val userClickedBottom: Boolean
+  inline val userClickedBottomInventory: Boolean
     get() = raw.clickedInventory === raw.view.bottomInventory
-
-  inline val clickType
-    get() = raw.click
 
   inline fun cancel() { raw.isCancelled = true }
 
   inline fun uncancel() { raw.isCancelled = false }
-
-  inline fun ifTopInvIsNotCompressedItemSafe(action: BCInvClickEvent.(CraftInventory) -> Unit) {
-    if (!topInvIsCompressedItemSafe)
-      action(top)
-  }
-
-  inline fun ifUserClickedTopInv(action: BCInvClickEvent.(CraftInventory) -> Unit) {
-    if (userClickedTopInv)
-      action(top)
-  }
-
-  inline fun ifUserClickedBottomInv(action: BCInvClickEvent.(CraftInventory) -> Unit) {
-    if (userClickedBottom)
-      action(top)
-  }
-
-  inline fun ifSlotTypeIsNot(type: SlotType, action: BCInvClickEvent.(CraftInventory) -> Unit) {
-    if (slotType !== type)
-      action(top)
-  }
-
-  inline fun ifSlotTypeIs(type: SlotType, action: BCInvClickEvent.(CraftInventory) -> Unit) {
-    if (slotType === type)
-      action(top)
-  }
 }

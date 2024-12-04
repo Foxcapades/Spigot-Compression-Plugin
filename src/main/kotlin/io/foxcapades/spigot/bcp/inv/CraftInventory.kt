@@ -113,8 +113,8 @@ internal value class CraftInventory(private val raw: Inventory) {
     if (!lvl.hasPrevious)
       return
 
-    val max   = it.maxStackSize
     val decom = it.compress(lvl.previous, 0)
+    val max   = decom.maxStackSize
     var total = it.amount * 9
 
     while (total > max) {
@@ -122,8 +122,10 @@ internal value class CraftInventory(private val raw: Inventory) {
       total -= max
     }
 
-    decom.amount = total
-    out.add(decom)
+    if (total > 0) {
+      decom.amount = total
+      out.add(decom)
+    }
 
     reduceAllBy(it.amount)
   }

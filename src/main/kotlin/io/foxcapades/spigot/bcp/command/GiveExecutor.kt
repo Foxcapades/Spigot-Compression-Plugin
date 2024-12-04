@@ -4,7 +4,11 @@ import io.foxcapades.spigot.bcp.Server
 import io.foxcapades.spigot.bcp.compress.Compressibles
 import io.foxcapades.spigot.bcp.compress.CompressionLevel
 import io.foxcapades.spigot.bcp.compress.compress
+import io.foxcapades.spigot.bcp.consts.Default
+import io.foxcapades.spigot.bcp.util.get
+import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -33,30 +37,38 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
       .orElse(null)
       ?: return false
 
-    val material = if (args[1].startsWith("minecraft:")) args[1] else "minecraft:${args[1]}"
+    val material = when (val p = args[1].indexOf(':')) {
+      -1 -> NamespacedKey(Default.Namespace, args[1])
 
-    if (material !in Compressibles)
-      return false
+      Default.Namespace.length ->
+        if (args[0].startsWith(Default.Namespace))
+          NamespacedKey(Default.Namespace, args[1].substring(p+1))
+        else
+          NamespacedKey(args[1][0, p], args[1].substring(p+1))
 
-    if (args[2] !in levels)
-      return false
-
-    val lvl = try {
-      CompressionLevel(args[2].toInt())
-    } catch (e: IllegalArgumentException) {
-      sender.sendMessage("&4${e.message}")
-      return false
-    } catch (e: Exception) {
-      return false
+      else -> NamespacedKey(args[1][0, p], args[1].substring(p+1))
     }
+
+    if (material !in Compressibles) {
+      sender.sendMessage("${ChatColor.DARK_RED}$material is not compressible")
+      return true
+    }
+
+    if (args[2].length != 1 || args[2][0] !in '1'..'9') {
+      sender.sendMessage("${ChatColor.DARK_RED}invalid compression level")
+      return true
+    }
+
+    val lvl = CompressionLevel(args[2].toInt())
 
     val qty = try {
       args[3].toInt()
     } catch (e: Exception) {
-      return false
+      sender.sendMessage("${ChatColor.DARK_RED}qty must be an integer")
+      return true
     }
 
-    for (v in player.inventory.addItem(Material.matchMaterial(material)!!.compress(lvl, qty)).values)
+    for (v in player.inventory.addItem(Material.matchMaterial(material.toString())!!.compress(lvl, qty)).values)
       player.world.dropItem(player.location, v)
 
     return true
@@ -74,7 +86,7 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
       2 -> filterCompressibles(args[1])
       3 -> levels.asList()
       4 -> listOf("1", "64")
-      else -> null
+      else -> emptyList()
     }
 
   private inline fun playerStream(): Stream<out Player> = Server.onlinePlayers.stream()
