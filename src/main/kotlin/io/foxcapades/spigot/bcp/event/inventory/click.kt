@@ -1,13 +1,9 @@
 package io.foxcapades.spigot.bcp.event.inventory
 
-import io.foxcapades.spigot.bcp.ext.*
-import io.foxcapades.spigot.bcp.ext.ifEmpty
-import io.foxcapades.spigot.bcp.ext.ifNotEmpty
-import io.foxcapades.spigot.bcp.ext.isEmpty
-import io.foxcapades.spigot.bcp.ext.logName
-import io.foxcapades.spigot.bcp.i18n.I18N
 import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.compress.isCompressed
+import io.foxcapades.spigot.bcp.ext.*
+import io.foxcapades.spigot.bcp.i18n.I18N
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.ClickType.*
 import org.bukkit.event.inventory.InventoryClickEvent

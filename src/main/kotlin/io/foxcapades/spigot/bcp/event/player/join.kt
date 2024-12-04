@@ -5,7 +5,7 @@ import io.foxcapades.spigot.bcp.item.ZipTool
 import org.bukkit.event.player.PlayerJoinEvent
 
 internal fun PlayerJoinEvent.handle() {
-  if (player.hasPermission(Permission.UseTool)) {
+  if (player.hasPermission(Permission.ToolCraft)) {
     player.discoverRecipe(ZipTool.key)
   } else {
     player.undiscoverRecipe(ZipTool.key)

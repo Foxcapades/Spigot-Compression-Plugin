@@ -1,7 +1,9 @@
 package io.foxcapades.spigot.bcp
 
-import io.foxcapades.spigot.bcp.command.GiveExecutor
-import io.foxcapades.spigot.bcp.command.ReloadExecutor
+import io.foxcapades.spigot.bcp.command.CommandExecutor
+import io.foxcapades.spigot.bcp.command.ZipCommand
+import io.foxcapades.spigot.bcp.compress.Compressibles
+import io.foxcapades.spigot.bcp.config.Config
 import io.foxcapades.spigot.bcp.config.ListFiles
 import io.foxcapades.spigot.bcp.event.EventDispatch
 import io.foxcapades.spigot.bcp.i18n.I18N
@@ -25,14 +27,16 @@ class BlockCompressionPlugin : JavaPlugin() {
     ZipTool
 
     // load config
-    ReloadExecutor.performReload()
+    reload()
 
-    // Register compress/zip command handler.
-    getCommand("bcreload")!!.setExecutor(ReloadExecutor)
+    getCommand("bcp")!!.apply {
+      setExecutor(CommandExecutor)
+      tabCompleter = CommandExecutor
+    }
 
-    val give = getCommand("bcgive")!!
-    give.tabCompleter = GiveExecutor
-    give.setExecutor(GiveExecutor)
+    getCommand("compress")!!.apply {
+      setExecutor(ZipCommand)
+    }
 
     server.pluginManager.registerEvents(EventDispatch, this)
   }
@@ -42,4 +46,9 @@ class BlockCompressionPlugin : JavaPlugin() {
 
   @Suppress("NOTHING_TO_INLINE")
   internal inline fun file(path: String) = File(dataFolder, path)
+
+  internal fun reload() {
+    Compressibles.reload()
+    Config.reload()
+  }
 }

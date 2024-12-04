@@ -1,0 +1,20 @@
+package io.foxcapades.spigot.bcp.command
+
+import io.foxcapades.spigot.bcp.util.ArrayView
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+
+internal interface Subcommand {
+  val name: String
+
+  val aliases: Array<String>
+    get() = emptyArray()
+
+  val permission: String
+
+  fun tryExecute(sender: CommandSender, command: Command, alias: String, args: ArrayView<out String>): CommandResult
+
+  fun tabComplete(sender: CommandSender, command: Command, alias: String, args: ArrayView<out String>): List<String> =
+    emptyList()
+}
+

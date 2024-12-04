@@ -1,9 +1,9 @@
 package io.foxcapades.spigot.bcp.i18n
 
+import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.Plugin
 import io.foxcapades.spigot.bcp.compress.CompressionLevel
 import io.foxcapades.spigot.bcp.config.Config
-import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.util.Observable
 import org.bukkit.Material
 import java.io.InputStream

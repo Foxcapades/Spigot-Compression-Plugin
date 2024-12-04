@@ -1,8 +1,8 @@
 package io.foxcapades.spigot.bcp.compress
 
+import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.config.*
 import io.foxcapades.spigot.bcp.consts.Default
-import io.foxcapades.spigot.bcp.Logger
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import java.util.concurrent.locks.ReentrantReadWriteLock

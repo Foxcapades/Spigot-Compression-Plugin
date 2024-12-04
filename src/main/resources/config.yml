@@ -18,7 +18,7 @@ zip-tool:
     #
     # Empty slots may be represented with a value that is either a YAML null
     # or 'minecraft:air'.
-    items:
+    ingredients:
       I: minecraft:iron_ingot
       G: minecraft:gold_ingot
       R: minecraft:redstone_block

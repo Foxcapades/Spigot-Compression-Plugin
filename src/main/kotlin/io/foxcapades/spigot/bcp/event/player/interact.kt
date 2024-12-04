@@ -7,7 +7,7 @@ import io.foxcapades.spigot.bcp.item.ZipTool.isZipTool
 import org.bukkit.event.player.PlayerInteractEvent
 
 internal fun PlayerInteractEvent.handle() {
-  if (item.isZipTool && player.hasPermission(Permission.UseTool)) {
+  if (item.isZipTool && player.hasPermission(Permission.ToolUse)) {
     isCancelled = true
     player.openCompressionGUI()
   } else if (item.isCompressed) {

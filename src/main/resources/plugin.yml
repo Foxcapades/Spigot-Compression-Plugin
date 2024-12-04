@@ -1,31 +1,83 @@
 name: block-compression
 version: 2.0.0-SNAPSHOT
-author: Elizabeth Harper <foxcapades.io@gmail.com>
 main: io.foxcapades.spigot.bcp.BlockCompressionPlugin
+api-version: '1.21'
+
+author: Elizabeth Harper <foxcapades.io@gmail.com>
 website: https://github.com/Foxcapades/Spigot-Compression-Plugin
-api-version: 1.20
 
 commands:
-  bcgive:
-    id: bcp-give
-    description: Gives a user a compressed item at the specified level.
-    usage: /bcgive <user> <item> <lvl> <qty>
-    permission: block-compression.give
+  bcp:
+    id: bcp
+    description: Block Compression commands.
+    aliases:
+    - bc
+    usage: /bcp <subcommand> [options...]
     permission-message: You do not have permission to use this command.
-  bcreload:
-    id: bcp-reload
-    description: Reloads the allowed compressible items/blocks configs.
-    usage: /bcreload
-    permission: block-compression.reload
-    permission-message: You do not have permission to use this command.
+  compress:
+    id: bcp-compress
+    description: Open block compression GUI
+    aliases:
+    - cmp
+    - zip
+    usage: /compress
+    permission: block-compression.cmd.compress
+
+default-permission: false
 
 permissions:
-  block-compression.tool:
+  block-compression.*:
+    description: Grants access to all block-compression permissions.
+    default: false
+    children:
+    - block-compression.item.*
+    - block-compression.cmd.*
+
+  #
+  # ITEM PERMISSIONS
+  #
+
+  block-compression.item.*:
+    description: Grants access to all block-compression item permissions.
+    default: op
+    children:
+    - block-compression.item.tool.*
+
+  block-compression.item.tool.*:
+    description: Grants access to craft and use the block compression tool.
+    default: op
+    children:
+    - block-compression.item.tool.craft
+    - block-compression.item.tool.use
+
+  block-compression.item.tool.craft:
+    description: Grants access to craft but not use the block compression tool.
+    default: op
+
+  block-compression.item.tool.use:
+    description: Grants access to use but not craft the block compression tool.
+    default: not op
+
+  #
+  # COMMAND PERMISSIONS
+  #
+
+  block-compression.cmd.*:
     description: Grants access to the block compression tool.
+    default: false
+    children:
+    - block-compression.cmd.compress
+    - block-compression.cmd.give
+    - block-compression.cmd.reload
+
+  block-compression.cmd.compress:
+    description: Grants access to the '/bcp compress' and '/compress' commands.
     default: op
-  block-compression.give:
-    description: Grants access to the /bcgive command.
+
+  block-compression.cmd.give:
+    description: Grants access to the '/bcp give' command.
     default: op
-  block-compression.reload:
-    description: Grants access to the /bcreload command.
-    default: op
+
+  block-compression.cmd.reload:
+    description: Grants access to the '/bcp reload' command.
+    default: false

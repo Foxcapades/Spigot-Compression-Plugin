@@ -5,29 +5,34 @@ import io.foxcapades.spigot.bcp.compress.Compressibles
 import io.foxcapades.spigot.bcp.compress.CompressionLevel
 import io.foxcapades.spigot.bcp.compress.compress
 import io.foxcapades.spigot.bcp.consts.Default
+import io.foxcapades.spigot.bcp.consts.Permission
+import io.foxcapades.spigot.bcp.util.ArrayView
 import io.foxcapades.spigot.bcp.util.get
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import java.util.stream.Stream
 
 @Suppress("NOTHING_TO_INLINE")
-internal object GiveExecutor : CommandExecutor, TabCompleter {
+internal object GiveCommand : Subcommand {
   private val levels = Array(9) { ('1'.code + it).toChar().toString() }
 
-  override fun onCommand(
+  override val name: String
+    get() = "give"
+
+  override val permission: String
+    get() = Permission.GiveCommand
+
+  override fun tryExecute(
     sender: CommandSender,
     command: Command,
-    label: String,
-    args: Array<out String>
-  ): Boolean {
-    if (args.size != 4)
-      return false
+    alias: String,
+    args: ArrayView<out String>
+  ): CommandResult {
+    if (args.size < 4)
+      return CommandResult.fail()
 
     // Find the target player by name or return false
     val player = playerNameStream()
@@ -35,7 +40,7 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
       .findFirst()
       .flatMap { name -> playerStream().filter { it.playerListName == name }.findFirst() }
       .orElse(null)
-      ?: return false
+      ?: return CommandResult.fail()
 
     val material = when (val p = args[1].indexOf(':')) {
       -1 -> NamespacedKey(Default.Namespace, args[1])
@@ -49,32 +54,32 @@ internal object GiveExecutor : CommandExecutor, TabCompleter {
       else -> NamespacedKey(args[1][0, p], args[1].substring(p+1))
     }
 
-    if (material !in Compressibles) {
-      sender.sendMessage("${ChatColor.DARK_RED}$material is not compressible")
-      return true
-    }
+    if (material !in Compressibles)
+      return CommandResult.fail("$material is not compressible")
 
-    if (args[2].length != 1 || args[2][0] !in '1'..'9') {
-      sender.sendMessage("${ChatColor.DARK_RED}invalid compression level")
-      return true
-    }
+    if (args[2].length != 1 || args[2][0] !in '1'..'9')
+      return CommandResult.fail("invalid compression level")
 
     val lvl = CompressionLevel(args[2].toInt())
 
     val qty = try {
       args[3].toInt()
     } catch (e: Exception) {
-      sender.sendMessage("${ChatColor.DARK_RED}qty must be an integer")
-      return true
+      return CommandResult.fail("qty must be an integer")
     }
 
     for (v in player.inventory.addItem(Material.matchMaterial(material.toString())!!.compress(lvl, qty)).values)
       player.world.dropItem(player.location, v)
 
-    return true
+    return CommandResult.ok()
   }
 
-  override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>) =
+  override fun tabComplete(
+    sender: CommandSender,
+    command: Command,
+    alias: String,
+    args: ArrayView<out String>
+  ): List<String>  =
     when (args.size) {
       0 -> Server.onlinePlayers.asSequence()
         .map { it.playerListName }

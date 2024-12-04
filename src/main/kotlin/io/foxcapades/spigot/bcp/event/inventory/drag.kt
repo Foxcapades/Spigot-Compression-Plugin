@@ -1,12 +1,12 @@
 package io.foxcapades.spigot.bcp.event.inventory
 
+import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.Plugin
 import io.foxcapades.spigot.bcp.Server
 import io.foxcapades.spigot.bcp.compress.isCompressed
 import io.foxcapades.spigot.bcp.ext.isCompressionTool
 import io.foxcapades.spigot.bcp.ext.logName
 import io.foxcapades.spigot.bcp.inv.CraftInventory
-import io.foxcapades.spigot.bcp.Logger
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType.*
 

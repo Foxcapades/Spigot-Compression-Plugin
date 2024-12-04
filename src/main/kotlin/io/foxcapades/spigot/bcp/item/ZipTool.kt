@@ -1,12 +1,12 @@
 package io.foxcapades.spigot.bcp.item
 
+import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.Plugin
 import io.foxcapades.spigot.bcp.Server
 import io.foxcapades.spigot.bcp.config.Config
 import io.foxcapades.spigot.bcp.config.RecipeConfigValues
 import io.foxcapades.spigot.bcp.consts.Default
 import io.foxcapades.spigot.bcp.i18n.I18N
-import io.foxcapades.spigot.bcp.Logger
 import io.foxcapades.spigot.bcp.util.Observer
 import io.foxcapades.spigot.bcp.util.then
 import org.bukkit.Material
@@ -70,7 +70,7 @@ internal object ZipTool : Observer() {
         ByteArray(3) { 32 },
       )
 
-      val chars = config.items.asSequence()
+      val chars = config.ingredients.asSequence()
         .associate { (k, v) -> k[0].code.toByte() to v?.let(NamespacedKey::fromString) }
 
       val layout = RecipeLayout(config.layout)
@@ -92,7 +92,7 @@ internal object ZipTool : Observer() {
 
       shape(String(lines[0]), String(lines[1]), String(lines[2]))
 
-      for ((k, v) in config.items)
+      for ((k, v) in config.ingredients)
         if (v != null)
           setIngredient(k[0], Material.matchMaterial(v)!!)
     }

@@ -1,7 +1,7 @@
 package io.foxcapades.spigot.bcp.config
 
-import io.foxcapades.spigot.bcp.Plugin
 import io.foxcapades.spigot.bcp.Logger
+import io.foxcapades.spigot.bcp.Plugin
 
 internal object ListFiles {
   private inline val BlockResource get() = "/blocks/minecraft.tsv"
