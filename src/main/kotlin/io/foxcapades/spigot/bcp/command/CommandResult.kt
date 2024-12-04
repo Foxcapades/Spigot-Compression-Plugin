@@ -1,6 +1,6 @@
 package io.foxcapades.spigot.bcp.command
 
-@Suppress("DataClassPrivateConstructor")
+@ConsistentCopyVisibility
 internal data class CommandResult private constructor(val success: Boolean, val message: String? = null) {
   companion object {
     private val SimpleSuccess = CommandResult(true)
