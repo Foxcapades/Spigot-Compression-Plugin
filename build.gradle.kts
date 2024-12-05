@@ -1,13 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import extra.plugin.lang.BuildLanguageFiles
+import extra.plugin.mojang.BuildPlayerHeadMeta
+import extra.plugin.mojang.GetPlayerUUID
 
 plugins {
-  kotlin("jvm") version "1.9.23"
-  `java-library`
-  id("com.github.johnrengelman.shadow") version "7.1.0"
+  kotlin("jvm") version "2.0.21"
+  id("com.github.johnrengelman.shadow") version "8.1.1"
 }
-
-group   = "io.foxcapades"
-version = "1.10.1"
 
 repositories {
   mavenCentral()
@@ -16,34 +14,77 @@ repositories {
 }
 
 dependencies {
-  compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
+  compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
 }
 
 kotlin {
-  jvmToolchain {
-    languageVersion.set(JavaLanguageVersion.of(17))
-    vendor.set(JvmVendorSpec.AMAZON)
+  compilerOptions {
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
   }
 }
 
-tasks.withType(KotlinCompile::class.java).all {
-  kotlinOptions {
-    jvmTarget = "17"
-    freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-  }
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
+
+group = "io.foxcapades.mc"
+version = "2.0.0-SNAPSHOT"
+
+val releaseDir = mkdir(layout.buildDirectory.dir("release"))
+val libsDir = mkdir(layout.buildDirectory.dir("libs"))
+
+val shadowJarFile = libsDir.resolve("shadow.jar")
+val compressedJarFile = libsDir.resolve("compressed.jar")
 
 tasks.test {
   useJUnitPlatform()
 }
 
-tasks.register("compress", proguard.gradle.ProGuardTask::class.java) {
-  dependsOn(":shadowJar")
+tasks.shadowJar {
+  dependsOn(pushVersion)
 
-  configuration("bld/proguard-rules.pro")
+  destinationDirectory = shadowJarFile.parentFile
+  archiveFileName = shadowJarFile.name
+}
+
+tasks.register<BuildLanguageFiles>("build-language-files")
+
+val pushVersion = tasks.register("update-versions") {
+  doLast {
+    with(ProcessBuilder(
+      "sed",
+      "-i",
+      "s/^version:.\\+/version: ${project.version}/",
+      project.projectDir.resolve("src/main/resources/plugin.yml").path
+    ).start()) { require(waitFor() == 0) { "failed to update plugin version in plugin.yml: ${errorReader().use { it.readText() }}" } }
+  }
+}
+
+val compress = tasks.register("compress", proguard.gradle.ProGuardTask::class.java) {
+  dependsOn(tasks.shadowJar)
+
+  inputs.files(shadowJarFile)
+  outputs.files(compressedJarFile)
+
+  configuration("extra/proguard-rules.pro")
 
   libraryjars(files(configurations.compileClasspath.get().files))
 
-  injars("build/libs/spigot-block-compression-$version-all.jar")
-  outjars("build/libs/spigot-block-compression.jar")
+  injars(shadowJarFile)
+  outjars(compressedJarFile)
 }
+
+tasks.register("release") {
+  val releaseFile = releaseDir.resolve("BlockCompression-${project.version}.jar")
+
+  dependsOn(compress)
+
+  inputs.files(compressedJarFile)
+  outputs.files(releaseFile)
+
+  doLast { compressedJarFile.copyTo(target = releaseFile, overwrite = true) }
+}
+
+tasks.register<BuildPlayerHeadMeta>("buildPlayerHeadMeta")
+tasks.register<GetPlayerUUID>("getPlayerUUID")
