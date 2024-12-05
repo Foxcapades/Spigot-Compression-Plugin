@@ -4,26 +4,26 @@
 
 -libraryjars <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class):<java.home>/jmods/java.logging.jmod(!**.jar;!module-info.class)
 
--keep class io.foxcapades.spigot.bcp.BlockCompressionPlugin {
+-keep class io.foxcapades.mc.bcp.BlockCompressionPlugin {
   public void onLoad();
   public void onEnable();
 }
 
--keepclassmembers class io.foxcapades.spigot.bcp.event.EventDispatch {
+-keepclassmembers class io.foxcapades.mc.bcp.event.EventDispatch {
   <methods>;
 }
 
--keepclassmembers class io.foxcapades.spigot.bcp.config.ConfigValues {
+-keepclassmembers class io.foxcapades.mc.bcp.config.ConfigValues {
   <fields>;
   <methods>;
 }
 
--keepclassmembers class io.foxcapades.spigot.bcp.config.ZipToolConfigValues {
+-keepclassmembers class io.foxcapades.mc.bcp.config.ZipToolConfigValues {
   <fields>;
   <methods>;
 }
 
--keepclassmembers class io.foxcapades.spigot.bcp.config.RecipeConfigValues {
+-keepclassmembers class io.foxcapades.mc.bcp.config.RecipeConfigValues {
   <fields>;
   <methods>;
 }
