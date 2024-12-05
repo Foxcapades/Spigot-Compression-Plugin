@@ -14,7 +14,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 
 @Suppress("NOTHING_TO_INLINE")
-internal object GiveCommand : ParameterizedSubcommand() {
+internal class GiveCommand : ParameterizedSubcommand() {
   private val levels = Array(9) { ('1'.code + it).toChar().toString() }
 
   override val name: String

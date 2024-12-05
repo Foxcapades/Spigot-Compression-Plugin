@@ -40,8 +40,6 @@ internal object ZipCommand : Subcommand, CommandExecutor {
         true
       }
 
-  override fun usageFor(alias: String) = alias
-
   override fun toString() = "/bcp $name"
 }
 

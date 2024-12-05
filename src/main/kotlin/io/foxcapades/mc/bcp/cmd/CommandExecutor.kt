@@ -8,7 +8,12 @@ import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.command.TabCompleter
 
 internal object CommandExecutor : CommandExecutor, TabCompleter {
-  private val subCommands = sequenceOf(GiveCommand, ReloadCommand, ZipCommand)
+  private val subCommands = sequenceOf(
+    AboutCommand(),
+    GiveCommand(),
+    ReloadCommand(),
+    ZipCommand
+  )
     .flatMap { com -> sequenceOf(com.name, *com.aliases).map { it to com } }
     .sortedBy { it.first }
     .toMap()
@@ -64,13 +69,13 @@ internal object CommandExecutor : CommandExecutor, TabCompleter {
 
   @Suppress("NOTHING_TO_INLINE")
   private inline fun getCommand(sender: CommandSender, name: String) =
-    subCommands[name]?.takeIf { sender.hasPermission(it.permission) || sender is ConsoleCommandSender }
+    subCommands[name]?.takeIf { it.permission?.let(sender::hasPermission) ?: true || sender is ConsoleCommandSender }
 
   @Suppress("NOTHING_TO_INLINE")
   private inline fun filterCommands(sender: CommandSender, start: String) =
     subCommands.asSequence()
       .filter { (k, _) -> k.startsWith(start) }
-      .filter { (_, v) -> sender.hasPermission(v.permission) || sender is ConsoleCommandSender }
+      .filter { (_, v) -> v.permission?.let(sender::hasPermission) ?: true || sender is ConsoleCommandSender }
       .map(Map.Entry<String, *>::key)
       .toList()
 

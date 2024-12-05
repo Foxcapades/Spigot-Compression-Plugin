@@ -7,7 +7,7 @@ import io.foxcapades.mc.bcp.util.ArrayView
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 
-internal object ReloadCommand : Subcommand {
+internal class ReloadCommand() : Subcommand {
   override val name: String
     get() = "reload"
 
@@ -29,8 +29,6 @@ internal object ReloadCommand : Subcommand {
       error("reload encountered an error; see server logs for more details")
     }
   }
-
-  override fun usageFor(alias: String) = alias
 
   override fun toString() = "/bcp $name"
 }
