@@ -1,0 +1,7 @@
+Invert placement attempt when shift clicking result into inventory.
+When shift+right-clicking a stack into the compression GUI, if there is a remainder try and merge it into a non-full stack of the same type in the user's inventory.
+PlayerInteractEvent canceling prevents players from opening GUIs while holding a compressed stack.
+
+--
+
+Can seeds compressed be planted?

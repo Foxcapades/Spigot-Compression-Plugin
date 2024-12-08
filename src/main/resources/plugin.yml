@@ -1,83 +1,86 @@
-name: block-compression
+name: StackZip
 version: 2.0.0-SNAPSHOT
-main: io.foxcapades.mc.bcp.BlockCompressionPlugin
+main: io.foxcapades.bukkit.szip.StackZip
 api-version: '1.21'
 
 author: Elizabeth Harper <foxcapades.io@gmail.com>
 website: https://github.com/Foxcapades/Spigot-Compression-Plugin
 
+depend:
+- ProtocolLib
+
 commands:
-  bcp:
-    id: bcp
-    description: Block Compression commands.
+  sz:
+    id: sz
     aliases:
-    - bc
-    usage: /bcp <subcommand> [options...]
+    - szip
+    description: Block Compression commands.
+    usage: /sz <subcommand> [options...]
     permission-message: You do not have permission to use this command.
   compress:
-    id: bcp-compress
-    description: Open block compression GUI
+    id: sz-compress
+    description: Open stack compression GUI
     aliases:
     - cmp
     - zip
     usage: /compress
-    permission: block-compression.cmd.compress
+    permission: szip.cmd.compress
 
 default-permission: false
 
 permissions:
-  block-compression.*:
-    description: Grants access to all block-compression permissions.
+  szip.*:
+    description: Grants access to all StackZip permissions.
     default: false
     children:
-    - block-compression.item.*
-    - block-compression.cmd.*
+    - szip.item.*
+    - szip.cmd.*
 
   #
   # ITEM PERMISSIONS
   #
 
-  block-compression.item.*:
-    description: Grants access to all block-compression item permissions.
+  szip.item.*:
+    description: Grants access to all StackZip item permissions.
     default: op
     children:
-    - block-compression.item.tool.*
+    - szip.item.tool.*
 
-  block-compression.item.tool.*:
-    description: Grants access to craft and use the block compression tool.
+  szip.item.tool.*:
+    description: Grants access to craft and use the stack compression tool.
     default: op
     children:
-    - block-compression.item.tool.craft
-    - block-compression.item.tool.use
+    - szip.item.tool.craft
+    - szip.item.tool.use
 
-  block-compression.item.tool.craft:
-    description: Grants access to craft but not use the block compression tool.
+  szip.item.tool.craft:
+    description: Grants access to craft but not use the stack compression tool.
     default: op
 
-  block-compression.item.tool.use:
-    description: Grants access to use but not craft the block compression tool.
+  szip.item.tool.use:
+    description: Grants access to use but not craft the stack compression tool.
     default: not op
 
   #
   # COMMAND PERMISSIONS
   #
 
-  block-compression.cmd.*:
-    description: Grants access to the block compression tool.
+  szip.cmd.*:
+    description: Grants access to the stack compression tool.
     default: false
     children:
-    - block-compression.cmd.compress
-    - block-compression.cmd.give
-    - block-compression.cmd.reload
+    - szip.cmd.compress
+    - szip.cmd.give
+    - szip.cmd.reload
 
-  block-compression.cmd.compress:
-    description: Grants access to the '/bcp compress' and '/compress' commands.
+  szip.cmd.compress:
+    description: Grants access to the '/sz compress' and '/compress' commands.
     default: op
 
-  block-compression.cmd.give:
-    description: Grants access to the '/bcp give' command.
+  szip.cmd.give:
+    description: Grants access to the '/sz give' command.
     default: op
 
-  block-compression.cmd.reload:
-    description: Grants access to the '/bcp reload' command.
+  szip.cmd.reload:
+    description: Grants access to the '/sz reload' command.
     default: false

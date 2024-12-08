@@ -3,33 +3,45 @@ import extra.plugin.mojang.BuildPlayerHeadMeta
 import extra.plugin.mojang.GetPlayerUUID
 
 plugins {
-  kotlin("jvm") version "2.0.21"
+  kotlin("jvm") version "2.1.0"
   id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-repositories {
-  mavenCentral()
-  maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-  maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-}
+allprojects {
+  apply(plugin = "org.jetbrains.kotlin.jvm")
 
-dependencies {
-  compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
-}
+  group = "io.foxcapades.mc"
+  version = "2.0.0-SNAPSHOT"
 
-kotlin {
-  compilerOptions {
-    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+  repositories {
+    mavenCentral()
+    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+  }
+
+  dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
+  }
+
+  kotlin {
+    compilerOptions {
+      jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+  }
+
+  java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
 }
 
-java {
-  sourceCompatibility = JavaVersion.VERSION_17
-  targetCompatibility = JavaVersion.VERSION_17
+repositories {
+  maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
 }
 
-group = "io.foxcapades.mc"
-version = "2.0.0-SNAPSHOT"
+dependencies {
+  compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+  implementation(project(":common"))
+}
 
 val releaseDir = mkdir(layout.buildDirectory.dir("release"))
 val libsDir = mkdir(layout.buildDirectory.dir("libs"))

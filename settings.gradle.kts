@@ -8,3 +8,10 @@ buildscript {
     classpath("com.guardsquare:proguard-gradle:7.6.0")
   }
 }
+
+include("common")
+project(":common").apply {
+  projectDir = file("lib/common")
+  name = "common"
+}
+
