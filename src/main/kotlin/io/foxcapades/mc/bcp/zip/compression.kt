@@ -81,7 +81,10 @@ private inline fun ItemStack.buildMeta(lvl: CompressionLevel): ItemMeta {
       else
         ArrayList<String>(it.size + 1).apply { add(I18N.fillLoreFor(lvl, name)); addAll(it) }
     }
-    meta.setMaxStackSize(64)
+
+    if (type.maxStackSize < 64)
+      meta.setMaxStackSize(64)
+
     meta.setEnchantmentGlintOverride(true)
   }
 
