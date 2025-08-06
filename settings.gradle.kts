@@ -10,8 +10,7 @@ buildscript {
 }
 
 include("common")
-project(":common").apply {
-  projectDir = file("lib/common")
-  name = "common"
-}
+project(":common").projectDir = file("lib/common")
 
+include("unsafe-1.21.3")
+project(":unsafe-1.21.3").projectDir = file("lib/unsafe/1.21.3")

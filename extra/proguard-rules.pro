@@ -9,6 +9,14 @@
   public void onEnable();
 }
 
+-keep class io.foxcapades.bukkit.szip.item.ZipStack {
+  <methods>;
+}
+
+-keep class io.foxcapades.bukkit.szip.item.ZipStack.Companion {
+  <methods>;
+}
+
 -keepclassmembers class io.foxcapades.bukkit.szip.event.EventDispatch {
   <methods>;
 }

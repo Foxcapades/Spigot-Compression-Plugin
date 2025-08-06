@@ -11,6 +11,8 @@ import io.foxcapades.bukkit.szip.event.EventDispatch
 import io.foxcapades.bukkit.szip.i18n.I18N
 import io.foxcapades.bukkit.szip.item.ZipTool
 import io.foxcapades.bukkit.szip.packets.registerPacketListeners
+import io.foxcapades.mc.bukkit.thimble.types.bukkit.ItemMetaDeserializerBaseV1
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -35,6 +37,8 @@ class StackZip : JavaPlugin() {
 
     // load config
     reload()
+
+    Logger.info("%s", server.itemFactory.getItemMeta(Material.STONE))
 
     registerPacketListeners()
 

@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack
  * [MinimumCompressionLevel] or is greater than [MaximumCompressionLevel].
  */
 @JvmInline
-internal value class CompressionLevel(val value: Int) {
+value class CompressionLevel(val value: Int) {
   init {
     if (value !in MinimumCompressionLevel ..< MaximumCompressionLevel)
       throw InvalidCompressionLevelException(IllegalArgumentException("invalid compression level $value, must be in the range [$MinimumCompressionLevel-$MaximumCompressionLevel]"))

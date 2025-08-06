@@ -7,6 +7,11 @@ plugins {
   id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+val target = when (val prop = findProperty("mc-version")) {
+  null -> "1.21.3"
+  else -> prop as String
+}
+
 allprojects {
   apply(plugin = "org.jetbrains.kotlin.jvm")
 
@@ -16,10 +21,6 @@ allprojects {
   repositories {
     mavenCentral()
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-  }
-
-  dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
   }
 
   kotlin {
@@ -39,8 +40,10 @@ repositories {
 }
 
 dependencies {
-  compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+  compileOnly("org.spigotmc:spigot-api:$target-R0.1-SNAPSHOT")
+
   implementation(project(":common"))
+  implementation(project(":unsafe-$target"))
 }
 
 val releaseDir = mkdir(layout.buildDirectory.dir("release"))

@@ -38,34 +38,34 @@ internal fun registerPacketListeners() {
     PacketType.Play.Server.WINDOW_ITEMS,
   ) {
     override fun onPacketSending(event: PacketEvent) {
-      val item  = event.packet.itemModifier.readSafely(0)
-      val type   = item?.type?.let(Server.itemFactory::getItemMeta)?.javaClass
-
-      val meta = if (serial != null && type != null)
-        try {
-          ConfigurationSerialization.deserializeObject(
-            gson.fromJson(serial, TypeToken.getParameterized(Map::class.java, String::class.java, Any::class.java)) as Map<String, Any?>,
-            ConfigurationSerialization.getClassByAlias(ConfigurationSerialization.getAlias(type))!!
-          )
-        } catch (e: Exception) {
-          e.message
-        }
-      else
-        null
-
-
-          Logger.trace("""      -
-      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      
-      Event  = $event
-      Fields = ${event.packet.structures.fields.joinToString { it.field.toString() }}
-      Values = ${try { event.packet.structures.values.joinToString { it.toString() }} catch (e: Throwable) { "ERROR: ${e.message}" }}
-      Serial = ${gson.toJson(serial)}
-      Type   = $type
-      Meta   = $meta
-      
-      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      """.trimIndent())
+//      val item  = event.packet.itemModifier.readSafely(0)
+//      val type   = item?.type?.let(Server.itemFactory::getItemMeta)?.javaClass
+//
+//      val meta = if (serial != null && type != null)
+//        try {
+//          ConfigurationSerialization.deserializeObject(
+//            gson.fromJson(serial, TypeToken.getParameterized(Map::class.java, String::class.java, Any::class.java)) as Map<String, Any?>,
+//            ConfigurationSerialization.getClassByAlias(ConfigurationSerialization.getAlias(type))!!
+//          )
+//        } catch (e: Exception) {
+//          e.message
+//        }
+//      else
+//        null
+//
+//
+//          Logger.trace("""      -
+//      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//
+//      Event  = $event
+//      Fields = ${event.packet.structures.fields.joinToString { it.field.toString() }}
+//      Values = ${try { event.packet.structures.values.joinToString { it.toString() }} catch (e: Throwable) { "ERROR: ${e.message}" }}
+//      Serial = ${gson.toJson(serial)}
+//      Type   = $type
+//      Meta   = $meta
+//
+//      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//      """.trimIndent())
 //      event.packet.structures.values.ifExists(0) {
 //        Logger.trace("==================================================================================================")
 //        Logger.trace("%s")
