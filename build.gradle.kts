@@ -7,7 +7,7 @@ plugins {
 }
 
 group   = "io.foxcapades"
-version = "1.10.0"
+version = "1.10.2"
 
 repositories {
   mavenCentral()
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-  compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
+  compileOnly("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
 }
 
 kotlin {

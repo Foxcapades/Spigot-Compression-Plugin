@@ -29,13 +29,13 @@ internal class CraftInventory(private val raw: Inventory) {
    */
   fun popResult(): ItemStack {
 
-    val out = raw.getItem(0) ?: throw IllegalStateException("Attempted to pop a non-existent result.")
+    val out = raw.getItem(0)
+      ?: throw IllegalStateException("Attempted to pop a non-existent result.")
 
     if (!materialized)
       reduceAllBy(1)
 
     raw.clear(0)
-
 
     calculateResult()
 
