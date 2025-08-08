@@ -113,7 +113,7 @@ internal class CraftInventory(private val raw: Inventory) {
       return
 
     val max   = it.maxStackSize
-    val decom = it.compressionLevel(lvl.previous, 0)
+    val decom = it.compressionLevel(lvl.previous, 1)
     var total = it.amount * 9
 
     while (total > max) {
